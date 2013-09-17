@@ -1,0 +1,101 @@
+argv[ argc: 0]: ./Echo2
+argv[ argc: 1]: +echo
+
+#include	<stdio.h>
+
+#define STATE_NORMAL 0
+#define STATE_1SLASH 1
+#define STATE_2SLASH 2
+#define STATE_MULTILINE 3
+#define STATE_MULTILINEENDASTERISK 4
+
+
+
+#define FLAGS_ECHO 0x00000001
+#define IS_FLAGS_ECHO(a) (a & FLAGS_ECHO)
+#define SET_FLAGS_ECHO(a) (a |= FLAGS_ECHO)
+#define CLR_FLAGS_ECHO(a) (a &= ~FLAGS_ECHO)
+
+
+	main( int argc, char *argv[])
+{
+
+	int i;
+	int c;
+	int state;
+	state = STATE_NORMAL;
+
+	for( i = 0; i < argc; i++)
+	     printf( "argv[ argc: %d]: %s\n", i, argv[ i]);
+		
+	int flags = 0;
+	
+	for( i = 0; i < argc; i++)
+	{
+		if( !strcmp( argv[ i], "+echo"))
+			SET_FLAGS_ECHO( flags);
+		else if( !strcmp( argv[ i], "-echo"))
+			CLR_FLAGS_ECHO( flags);
+	}
+
+	while(( c = getchar()) != EOF)	
+	{	
+		if ( IS_FLAGS_ECHO( flags))
+			putchar( c);
+
+		else if (state == STATE_2SLASH && c != '\n') 
+			{}
+
+		else if (state == STATE_2SLASH && c == '\n') 
+			{
+				state = STATE_NORMAL;
+				putchar( c);
+			}
+		
+		else if( c == '/' && state == STATE_NORMAL) 
+			{
+				state = STATE_1SLASH;
+			}
+
+		else if( c == '/' && state == STATE_1SLASH)	
+			{
+				state = STATE_2SLASH;
+			}
+
+		else if( c != '/' && c != '*' && state == STATE_1SLASH ) 
+			{
+				state = STATE_NORMAL;
+				putchar('/');
+				putchar( c);
+			}
+
+		else if (state == STATE_MULTILINE && c != '*')
+		{}
+
+		else if (state == STATE_1SLASH && c == '*')
+		{
+			state = STATE_MULTILINE;
+		}
+
+		else if (state == STATE_MULTILINE && c == '*')
+		{
+			state = STATE_MULTILINEENDASTERISK;
+		}
+
+		else if (state == STATE_MULTILINEENDASTERISK && c == '/')
+			state = STATE_NORMAL;
+
+		else if (state == STATE_MULTILINEENDASTERISK && c != '/')
+			state = STATE_MULTILINE;
+
+		else
+		{
+			putchar( c); 
+		}	
+	}
+	return 0;
+
+	
+
+}
+

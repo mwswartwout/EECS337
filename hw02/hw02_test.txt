@@ -1,0 +1,77 @@
+rm -f *.o lex.c yacc.c y.output
+gcc -g   -c -o Echo2.o Echo2.c
+gcc Echo2.o -lm -g  -o Echo2
+for mws85 start time: Tue Sep 10 00:52:42 2013
+
+
+
+
+token: INT text: int
+token: IDENTIFIER text: x
+token: '=' text: =
+token: CONSTANT text: 2
+token: ';' text: ;
+token: IDENTIFIER text: void
+token: INT text: int
+token: '(' text: (
+token: ')' text: )
+token: '{' text: {
+token: IDENTIFIER text: x
+token: '=' text: =
+token: '(' text: (
+token: IDENTIFIER text: x
+token: '+' text: +
+token: CONSTANT text: 1
+token: ')' text: )
+token: ';' text: ;
+token: IDENTIFIER text: printf
+token: RETURN text: return
+token: INT text: int
+token: '(' text: (
+token: STRING_LITERAL text: %d
+token: ',' text: ,
+token: IDENTIFIER text: x
+token: ')' text: )
+token: ';' text: ;
+token: '}' text: }
+token: IDENTIFIER text: void
+token: INT text: int
+token: CHAR text: char
+token: '(' text: (
+token: ')' text: )
+token: '{' text: {
+token: INT text: int
+token: IDENTIFIER text: x
+token: '=' text: =
+token: CONSTANT text: 1
+token: ';' text: ;
+token: IDENTIFIER text: printf
+token: RETURN text: return
+token: INT text: int
+token: '(' text: (
+token: STRING_LITERAL text: %d
+token: ',' text: ,
+token: '(' text: (
+token: IDENTIFIER text: x
+token: '+' text: +
+token: CONSTANT text: 1
+token: ')' text: )
+token: ')' text: )
+token: ';' text: ;
+token: '}' text: }
+token: IDENTIFIER text: void
+token: INT text: int
+token: IDENTIFIER text: main
+token: INT text: int
+token: '(' text: (
+token: ')' text: )
+token: '{' text: {
+token: '(' text: (
+token: ')' text: )
+token: ';' text: ;
+token: CHAR text: char
+token: '(' text: (
+token: ')' text: )
+token: ';' text: ;
+token: '}' text: }
+

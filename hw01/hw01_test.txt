@@ -1,0 +1,195 @@
+rm -f *.o lex.c yacc.c y.output
+gcc -g   -c -o Code_1_6_1.o Code_1_6_1.c
+gcc Code_1_6_1.o -lm -g  -o Code_1_6_1
+gcc -g   -c -o Code_1_6_2.o Code_1_6_2.c
+gcc Code_1_6_2.o  -lm -g  -o Code_1_6_2
+gcc -g   -c -o Code_1_6_4.o Code_1_6_4.c
+gcc Code_1_6_4.o  -lm -g  -o Code_1_6_4
+gcc -g   -c -o Echo.o Echo.c
+gcc Echo.o -lm -g  -o Echo
+gcc -g   -c -o Echo2.o Echo2.c
+gcc Echo2.o -lm -g  -o Echo2
+w:13,	x:11,	y:13,	z:11
+w:9,	x:7,	y:13,	z:11
+3
+2
+argv[ argc: 0]: ./Echo
+argv[ argc: 1]: +echo
+/*******************************************************************************
+*
+* FILE:		Echo.c
+*
+* DESC:		EECS 337 Homework Assignment 1
+*
+* AUTHOR:	caseid
+*
+* DATE:		August 27, 2013
+*
+* EDIT HISTORY:	
+*
+*******************************************************************************/
+#include	<stdio.h>
+/*
+ *	main program
+ */
+int	main( int argc, char *argv[])
+{
+/*
+ *	declare variables
+ */
+	int i;
+	int c;
+/*
+ *	read from the command line and write out parameters
+ */
+	for( i = 0; i < argc; i++)
+	     printf( "argv[ argc: %d]: %s\n", i, argv[ i]);
+/*
+ *	read from stdin and write to stdout
+ */
+	while(( c = getchar()) != EOF)	// while input character from stdin does not equal end of file (-1)
+		putchar( c); // put the charater to the stdout
+	return 0;
+}
+
+argv[ argc: 0]: ./Echo2
+
+#include	<stdio.h>
+
+int	main( int argc, char *argv[])
+{
+
+	int i;
+	int c;
+
+	for( i = 0; i < argc; i++)
+	     printf( "argv[ argc: %d]: %s\n", i, argv[ i]);
+
+	while(( c = getchar()) != EOF)	
+		putchar( c); 
+	return 0;
+}
+
+argv[ argc: 0]: ./Echo2
+argv[ argc: 1]: +echo
+/*******************************************************************************
+*
+* FILE:		Echo.c
+*
+* DESC:		EECS 337 Homework Assignment 1
+*
+* AUTHOR:	mws85
+*
+* DATE:		August 27, 2013
+*
+* EDIT HISTORY:	
+*
+*******************************************************************************/
+#include	<stdio.h>
+
+#define STATE_NORMAL 0
+#define STATE_1SLASH 1
+#define STATE_2SLASH 2
+#define STATE_MULTILINE 3
+#define STATE_MULTILINEENDASTERISK 4
+
+/*
+*	define flags: [+/-] echo
+*/
+
+#define FLAGS_ECHO 0x00000001
+#define IS_FLAGS_ECHO(a) (a & FLAGS_ECHO)
+#define SET_FLAGS_ECHO(a) (a |= FLAGS_ECHO)
+#define CLR_FLAGS_ECHO(a) (a &= ~FLAGS_ECHO)
+
+/*
+ *	main program
+ */
+	main( int argc, char *argv[])
+{
+/*
+ *	declare variables
+ */
+	int i;
+	int c;
+	int state;
+	state = STATE_NORMAL;
+/*
+ *	read from the command line and write out parameters
+ */
+	for( i = 0; i < argc; i++)
+	     printf( "argv[ argc: %d]: %s\n", i, argv[ i]);
+		
+	int flags = 0;
+	
+	for( i = 0; i < argc; i++)
+	{
+		if( !strcmp( argv[ i], "+echo"))
+			SET_FLAGS_ECHO( flags);
+		else if( !strcmp( argv[ i], "-echo"))
+			CLR_FLAGS_ECHO( flags);
+	}
+/*
+ *	read from stdin and write to stdout
+ */
+	while(( c = getchar()) != EOF)	// while input character from stdin does not equal end of file (-1)
+	{	
+		if ( IS_FLAGS_ECHO( flags))
+			putchar( c);
+
+		else if (state == STATE_2SLASH && c != '\n') //Skips over char if 2 slashes have been detected, and still on the same line
+			{}
+
+		else if (state == STATE_2SLASH && c == '\n') //Resets state and places new line once end of comment is detected
+			{
+				state = STATE_NORMAL;
+				putchar( c);
+			}
+		
+		else if( c == '/' && state == STATE_NORMAL) //Sets state if 1st / is found
+			{
+				state = STATE_1SLASH;
+			}
+
+		else if( c == '/' && state == STATE_1SLASH)	//Sets state is 2nd / is found
+			{
+				state = STATE_2SLASH;
+			}
+
+		else if( c != '/' && c != '*' && state == STATE_1SLASH ) //Resets state and places / and char if 1slash was deteced, but not followed by a 2nd
+			{
+				state = STATE_NORMAL;
+				putchar('/');
+				putchar( c);
+			}
+
+		else if (state == STATE_MULTILINE && c != '*') //Skips over char if in a multiline comment and not a possible end to the comment
+		{}
+
+		else if (state == STATE_1SLASH && c == '*') //Initiates multiline comment state
+		{
+			state = STATE_MULTILINE;
+		}
+
+		else if (state == STATE_MULTILINE && c == '*') //Detects possible end of multiline comment
+		{
+			state = STATE_MULTILINEENDASTERISK;
+		}
+
+		else if (state == STATE_MULTILINEENDASTERISK && c == '/') //Resets state if multiline comment has been terminated
+			state = STATE_NORMAL;
+
+		else if (state == STATE_MULTILINEENDASTERISK && c != '/') //Resumes multiline comment state if there was an * in the comment, but is not part of terminating comment
+			state = STATE_MULTILINE;
+
+		else
+		{
+			putchar( c); // put the charater to the stdout
+		}	
+	}
+	return 0;
+
+	
+
+}
+
