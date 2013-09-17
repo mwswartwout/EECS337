@@ -4,9 +4,9 @@
 *
 * DESC:		EECS 337 Assignment 3
 *
-* AUTHOR:	caseid
+* AUTHOR:	mws85	
 *
-* DATE:		September 10, 2013
+* DATE:		September 17, 2013
 *
 * EDIT HISTORY:	
 *

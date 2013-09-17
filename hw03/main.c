@@ -4,9 +4,9 @@
 *
 * DESC:		EECS 337 Assignment 3
 *
-* AUTHOR:	caseid
+* AUTHOR:	mws85
 *
-* DATE:		September 10, 2013
+* DATE:		September 17, 2013
 *
 * EDIT HISTORY:	
 *
@@ -117,7 +117,7 @@ int	main( int argc, char *argv[])
  *	print start of test time
  */
 	time( &t);
-	fprintf( stdout, "for caseid start time: %s", ctime( &t));
+	fprintf( stdout, "for mws85  start time: %s", ctime( &t));
 /*
  *	initialize or constructor, init
  */
