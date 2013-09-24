@@ -16,6 +16,7 @@
  */
 int	main( int argc, char *argv[])
 {
+	//Define variables
 	int w, x, y, z;
 	int i = 4; int j = 5;
 	{	int j = 7;

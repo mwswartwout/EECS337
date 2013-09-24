@@ -51,7 +51,7 @@ DATA
 extern FILE	*yyin;
 extern FILE	*yyout;
 extern	char	*yytext;
-//extern	YYSTYPE yylval;
+extern	yystype yylval;
 extern	int	yywrap( void);
 extern	void	comment( void);
 extern	void	count(  int token);
