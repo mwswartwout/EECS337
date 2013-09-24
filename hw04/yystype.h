@@ -6,7 +6,7 @@
 *
 * AUTHOR:	mws85	
 *
-* DATE:		September 17, 2013
+* DATE:		September 23, 2013
 *
 * EDIT HISTORY:	
 *
@@ -30,6 +30,7 @@ DATA
 #define	FLAGS_ECHO	0x0001
 #define	FLAGS_DEBUG	0x0002
 #define	FLAGS_PARSE	0x0004
+#define FLAGS_SYMBOL	0x0008
 #define	IS_FLAGS_ECHO(a)	(a & FLAGS_ECHO)	
 #define	SET_FLAGS_ECHO(a)	(a |= FLAGS_ECHO)
 #define	CLR_FLAGS_ECHO(a)	(a &= ~FLAGS_ECHO)
@@ -39,6 +40,9 @@ DATA
 #define	IS_FLAGS_PARSE(a)	(a & FLAGS_PARSE)	
 #define	SET_FLAGS_PARSE(a)	(a |= FLAGS_PARSE)
 #define	CLR_FLAGS_PARSE(a)	(a &= ~FLAGS_PARSE)
+#define IS_FLAGS_SYMBOL(a)	(a & FLAGS_SYMBOL)
+#define SET_FLAGS_SYMBOL(a)	(a |= FLAGS_SYMBOL)
+#define CLR_FLAGS_SYMBOL(a)	(a &= ~FLAGS_SYMBOL)
 };
 
 /*
