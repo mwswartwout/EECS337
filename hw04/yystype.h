@@ -14,6 +14,39 @@
 #ifndef	YYSTYPE_H
 #define	YYSTYPE_H	1
 
+/*
+*	define an attribute structure
+*/
+#define		ATTRIBUTE	struct	attribute
+ATTRIBUTE
+{
+	int	token;
+#define		MAX_BUFFER_SIZE	128
+	char	buffer[ MAX_BUFFER_SIZE]; //static buffer
+	int 	length;
+#define 	FORMAT_NONE	0
+#define		FORMAT_CHAR	1
+#define		FORMAT_DECIMAL	2
+#define		FORMAT_HEXADECIMAL	3
+#define		FORMAT_OCTAL	4
+#define		FORMAT_FLOAT	5
+	int	format;
+};
+
+#define YYSTYPE struct yystype
+YYSTYPE
+{
+	int	token;
+	int 	index;
+};
+
+/*
+*	define the scanner attribute table (static)
+*/
+#define		MAX_ATTRIBUTES	128
+	ATTRIBUTE	attributes[ MAX_ATTRIBUTES];
+	unsigned int 	index;
+
 #include	<stdio.h>
 #include	<stdlib.h>
 #include	<string.h>
@@ -55,7 +88,7 @@ DATA
 extern FILE	*yyin;
 extern FILE	*yyout;
 extern	char	*yytext;
-extern	yystype yylval;
+extern	YYSTYPE yylval;
 extern	int	yywrap( void);
 extern	void	comment( void);
 extern	void	count(  int token);
