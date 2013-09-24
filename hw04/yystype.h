@@ -40,13 +40,6 @@ YYSTYPE
 	int 	index;
 };
 
-/*
-*	define the scanner attribute table (static)
-*/
-#define		MAX_ATTRIBUTES	128
-	ATTRIBUTE	attributes[ MAX_ATTRIBUTES];
-	unsigned int 	index;
-
 #include	<stdio.h>
 #include	<stdlib.h>
 #include	<string.h>
@@ -76,6 +69,9 @@ DATA
 #define IS_FLAGS_SYMBOL(a)	(a & FLAGS_SYMBOL)
 #define SET_FLAGS_SYMBOL(a)	(a |= FLAGS_SYMBOL)
 #define CLR_FLAGS_SYMBOL(a)	(a &= ~FLAGS_SYMBOL)
+#define		MAX_ATTRIBUTES	128
+	ATTRIBUTE	attributes[ MAX_ATTRIBUTES];
+	unsigned int 	index;
 };
 
 /*
@@ -105,5 +101,7 @@ extern	void	yyerror( char *s);
  */
 extern	DATA	data;
 extern	int	main( int argc, char *argv[]);
-
+extern	void 	print_attribute( int index);
+extern	void 	pirnt_attribute_table( void);
+extern  int 	attribute( int token, char *buffer, unsigned int length, int format);
 #endif
