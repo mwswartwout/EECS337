@@ -23,7 +23,9 @@
 %%
 
 [\n]	{ yylval.token = (int) yytext[0]; return yytext[ 0]; }
-.	{ yylval.token = (int) yytext[0]; return yytext[ 0]; } /* return everything else */
+a	{ yylval.token = (int) yytext[0]; return yytext[ 0]; }
+b	{ yylval.token = (int) yytext[0]; return yytext[ 0]; }
+.	{  } /* everything else return's nothing */
 
 %%
 
