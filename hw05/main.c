@@ -2,11 +2,11 @@
 *
 * FILE:		main.c
 *
-* DESC:		EECS 337 Assignment 3
+* DESC:		EECS 337 Assignment 5
 *
-* AUTHOR:	mws85
+* AUTHOR:	caseid
 *
-* DATE:		September 17, 2013
+* DATE:		October 1, 2013
 *
 * EDIT HISTORY:	
 *
@@ -32,16 +32,6 @@ int	main_init( void)
  */
 int	main_exit( void)
 {
-	/*
-	*	print the attribute table
-	*/
-	
-	#ifdef YYDEBUG
-		if( IS_FLAGS_SYMBOL( data.flags))
-		{
-			print_attribute_table();
-		}
-	#endif
 	return 0;
 }
 
@@ -70,11 +60,6 @@ void	main_process_flags( char *command)
 			yydebug = 0;
 			return;
 		}
-		else if( !strncmp( command, "-symbol", strlen( command)))
-		{
-			CLR_FLAGS_SYMBOL( data.flags);
-			return;
-		}
 		break;
 	case '+':
 		if( !strncmp( command, "+echo", strlen( command)))
@@ -90,11 +75,6 @@ void	main_process_flags( char *command)
 		else if( !strncmp( command, "+yydebug", strlen( command)))
 		{
 			yydebug = 1;
-			return;
-		}
-		else if( !strncmp( command, "-symbol", strlen( command)))
-		{
-			SET_FLAGS_SYMBOL( data.flags);
 			return;
 		}
 		break;
@@ -122,7 +102,7 @@ void	main_process_flags( char *command)
 			return;
 		}
 	}
-	fprintf( stdout, "Usage: ansi_c [[+|-]echo] [[+|-]debug] [[+|-]yydebug] [[+|-]symbol] [filename] [...]\n");
+	fprintf( stdout, "Usage: main [[+|-]echo] [[+|-]debug] [[+|-]yydebug] [filename] [...]\n");
 	exit( -1);
 }
 
@@ -137,7 +117,7 @@ int	main( int argc, char *argv[])
  *	print start of test time
  */
 	time( &t);
-	fprintf( stdout, "for mws85  start time: %s", ctime( &t));
+	fprintf( stdout, "for caseid start time: %s", ctime( &t));
 /*
  *	initialize or constructor, init
  */

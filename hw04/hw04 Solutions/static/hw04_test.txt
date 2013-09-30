@@ -1,0 +1,60 @@
+rm -f scan.c gram.c y.tab.h y.output *.o
+yacc -dv gram.y 
+conflicts: 1 shift/reduce
+mv -f y.tab.c gram.c
+gcc -g   -c -o gram.o gram.c
+lex  -t scan.l > scan.c
+gcc -g   -c -o scan.o scan.c
+gcc -g   -c -o main.o main.c
+gcc -g   -c -o attribute.o attribute.c
+gcc -g gram.o scan.o main.o attribute.o -o ansi_c
+rm gram.c scan.c
+for caseid start time: Mon Sep 16 16:48:51 2013
+attribute table: 
+token: IDENTIFIER	buffer: main	length: 5	format: NONE	
+token: IDENTIFIER	buffer: argc	length: 5	format: NONE	
+token: IDENTIFIER	buffer: argv	length: 5	format: NONE	
+token: IDENTIFIER	buffer: w	length: 2	format: NONE	
+token: IDENTIFIER	buffer: x	length: 2	format: NONE	
+token: IDENTIFIER	buffer: y	length: 2	format: NONE	
+token: IDENTIFIER	buffer: z	length: 2	format: NONE	
+token: IDENTIFIER	buffer: i	length: 2	format: NONE	
+token: CONSTANT		buffer: 4	length: 2	format: DECIMAL	decimal: 4	
+token: IDENTIFIER	buffer: j	length: 2	format: NONE	
+token: CONSTANT		buffer: 5	length: 2	format: DECIMAL	decimal: 5	
+token: CONSTANT		buffer: 7	length: 2	format: DECIMAL	decimal: 7	
+token: CONSTANT		buffer: 6	length: 2	format: DECIMAL	decimal: 6	
+token: CONSTANT		buffer: 8	length: 2	format: DECIMAL	decimal: 8	
+token: IDENTIFIER	buffer: printf	length: 7	format: NONE	
+token: STRING_LITERAL	buffer: "w:%d,\tx:%d,\ty:%d,\tz:%d\n"	length: 30	format: NONE	
+token: CONSTANT		buffer: 0	length: 2	format: DECIMAL	decimal: 0	
+for caseid start time: Mon Sep 16 16:48:51 2013
+attribute table: 
+token: IDENTIFIER	buffer: main	length: 5	format: NONE	
+token: IDENTIFIER	buffer: argc	length: 5	format: NONE	
+token: IDENTIFIER	buffer: argv	length: 5	format: NONE	
+token: IDENTIFIER	buffer: w	length: 2	format: NONE	
+token: IDENTIFIER	buffer: x	length: 2	format: NONE	
+token: IDENTIFIER	buffer: y	length: 2	format: NONE	
+token: IDENTIFIER	buffer: z	length: 2	format: NONE	
+token: IDENTIFIER	buffer: i	length: 2	format: NONE	
+token: CONSTANT		buffer: 3	length: 2	format: DECIMAL	decimal: 3	
+token: IDENTIFIER	buffer: j	length: 2	format: NONE	
+token: CONSTANT		buffer: 4	length: 2	format: DECIMAL	decimal: 4	
+token: CONSTANT		buffer: 5	length: 2	format: DECIMAL	decimal: 5	
+token: CONSTANT		buffer: 6	length: 2	format: DECIMAL	decimal: 6	
+token: CONSTANT		buffer: 7	length: 2	format: DECIMAL	decimal: 7	
+token: IDENTIFIER	buffer: printf	length: 7	format: NONE	
+token: STRING_LITERAL	buffer: "w:%d,\tx:%d,\ty:%d,\tz:%d\n"	length: 30	format: NONE	
+token: CONSTANT		buffer: 0	length: 2	format: DECIMAL	decimal: 0	
+for caseid start time: Mon Sep 16 16:48:51 2013
+attribute table: 
+token: IDENTIFIER	buffer: x	length: 2	format: NONE	
+token: CONSTANT		buffer: 2	length: 2	format: DECIMAL	decimal: 2	
+token: IDENTIFIER	buffer: b	length: 2	format: NONE	
+token: CONSTANT		buffer: 1	length: 2	format: DECIMAL	decimal: 1	
+token: IDENTIFIER	buffer: printf	length: 7	format: NONE	
+token: STRING_LITERAL	buffer: "%d\n"	length: 7	format: NONE	
+token: IDENTIFIER	buffer: c	length: 2	format: NONE	
+token: IDENTIFIER	buffer: main	length: 5	format: NONE	
+token: CONSTANT		buffer: 0	length: 2	format: DECIMAL	decimal: 0	

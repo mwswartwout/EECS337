@@ -63,7 +63,9 @@ void	print_attribute_table( void)
 {
 	int i;
 	for (i = 0; i < data.index; i++)
+	{
 		print_attribute( i);
+	}
 	return;
 }
 #endif
@@ -87,7 +89,9 @@ int	attribute( int token, char *buffer, unsigned int length, int format)
 	for (i = 0; i < MAX_ATTRIBUTES; i++)
 	{
 		if( !strncmp( buffer, data.attributes[i].buffer, length))
+		{
 			return i;
+		}
 	}
 	
 	data.index++;
