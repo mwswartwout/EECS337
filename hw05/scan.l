@@ -6,7 +6,7 @@
 * 		To avoid the syntax errors in test2.c we spell out the a, b, and
 *		newline (\n) characters and filter away everything else.
 *
-* AUTHOR:	caseid
+* AUTHOR:	mws85
 *
 * DATE:		October 1, 2013
 *
@@ -22,8 +22,8 @@
 
 %%
 
-[\n]	{ yylval = (int) yytext[0]; return yytext[ 0]; }
-.	{ yylval = (int) yytext[0]; return yytext[ 0]; } /* return everything else */
+[\n]	{ yylval.token = (int) yytext[0]; return yytext[ 0]; }
+.	{ yylval.token = (int) yytext[0]; return yytext[ 0]; } /* return everything else */
 
 %%
 

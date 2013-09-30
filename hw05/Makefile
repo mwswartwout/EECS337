@@ -4,7 +4,7 @@
 #
 # DESC:		EECS 337 Assignment 5
 #
-# AUTHOR:	caseid
+# AUTHOR:	mws85	
 #
 # DATE:		October 1, 2013
 #
