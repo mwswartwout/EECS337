@@ -4,7 +4,7 @@
 *
 * DESC:		EECS 337 Assignment 5
 *
-* AUTHOR:	caseid
+* AUTHOR:	mws85
 *
 * DATE:		October 1, 2013
 *
@@ -27,7 +27,15 @@ line		: A0 '\n'
 		;
 A0		: aletter A0
 		| bletter A0
-		| /* empty */ { printf( "NFA A0: accept\n"); }
+		| aletter A1
+		| bletter A1
+		;
+A1		: bletter A2
+		;
+A2		: aletter A3
+		| bletter A3
+		;
+A3		: /* empty */ { printf( "NFA A0: accept\n"); }
 		;
 aletter		: 'a'
 		;
