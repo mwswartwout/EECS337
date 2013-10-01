@@ -57,6 +57,11 @@ extern	char	*yytext;
 extern	YYSTYPE yylval;
 extern	int	yywrap( void);
 extern	void yysync( void);
+
+int	errors;
+
+extern void yysync( void);
+
 /*
  *	external variables and functions from gram.y
  */

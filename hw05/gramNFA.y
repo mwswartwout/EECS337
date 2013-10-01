@@ -24,6 +24,7 @@
 // NFA 
 line		: A0 '\n'
 		| line A0 '\n'
+		| error '\n' { yysync(); yyerrok; }
 		;
 A0		: aletter A0
 		| bletter A0

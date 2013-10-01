@@ -32,7 +32,12 @@ int	main_init( void)
  */
 int	main_exit( void)
 {
-	return 0;
+	/*
+	*	check if compiler erros
+	*/
+		if( data.errors)
+			fprintf( stderr, "Error: compiler errors: %d\n", data.errors);
+		return( data.errors);
 }
 
 /*
