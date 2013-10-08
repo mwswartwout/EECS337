@@ -5,7 +5,7 @@
 * DESC:		EECS 337 Assignment 6
 *      		yacc program for the Calculator page 295-296
 *
-* AUTHOR:	caseid
+* AUTHOR:	mws85
 *
 * DATE:		October 8, 2013
 *
@@ -21,29 +21,170 @@
 
 %start lines
 
-%token NUMBER
+%token INTEGER
+%token FLOAT
 
+%left '|'
+%left '^'
+%left '&'
 %left '+' '-'
-%left '*' '/' 
-%right UMINUS /* supplies precedence for unary minus */
+%left '*' '/' '%'
+%right UMINUS '~' /* supplies precedence for unary minus */
 
 %% 	/* beginning of rules section */
 
-lines	: lines expr '\n' { printf("%g\n", $2); }
-	| lines '\n' 
-	| /* empty */
-	| error '\n' { yyerror(" reenter previous line: "); yyerrok; }
+lines	: lines expr '\n' 
+	{
+		switch( $2.type)
+		{
+			case INTEGER:
+				printf("%Ld\n", $2.lvalue);
+				break;
+			case FLOAT:
+				printf("%Lg\n", $2.dvalue);
+				break;
+		}
+	}
+	| lines error '\n' { yyerror(" reenter previous line: "); yyerrok; }
+        | /* empty */
 	;
-expr	: expr '+' expr	{ $$ = $1 + $3;	}
-	| expr '-' expr	{ $$ = $1 - $3;	}
-	| expr '*' expr	{ $$ = $1 * $3;	}
-	| expr '/' expr	{ $$ = $1 / $3;	}
+expr	: expr '+' expr	
+	{
+		switch( $1.type)
+		{
+			case INTEGER:	
+				switch( $3.type)
+				{
+				case INTEGER:
+					$$.type = INTEGER;
+					$$.lvalue = $1.lvalue + $3.lvalue;
+					break;
+				case FLOAT:
+					$$.type = FLOAT;
+					$$.dvalue = (long double) $1.lvalue + $3.dvalue;
+					break;
+				}
+				break;
+			case FLOAT:
+				switch( $3.type)
+				{
+					case INTEGER:
+						$$.type = FLOAT;
+						$$.dvalue = $1.dvalue + (long double) $3.lvalue;
+						break;
+					case FLOAT:
+						$$.type = FLOAT;
+						$$.dvalue = $1.dvalue + $3.dvalue;
+						break;
+				}
+				break;
+		}
+	}
+	| expr '-' expr
+	{
+		switch( $1.type)
+		{
+			case INTEGER:	
+				switch( $3.type)
+				{
+				case INTEGER:
+					$$.type = INTEGER;
+					$$.lvalue = $1.lvalue - $3.lvalue;
+					break;
+				case FLOAT:
+					$$.type = FLOAT;
+					$$.dvalue = (long double) $1.lvalue - $3.dvalue;
+					break;
+				}
+				break;
+			case FLOAT:
+				switch( $3.type)
+				{
+					case INTEGER:
+						$$.type = FLOAT;
+						$$.dvalue = $1.dvalue - (long double) $3.lvalue;
+						break;
+					case FLOAT:
+						$$.type = FLOAT;
+						$$.dvalue = $1.dvalue - $3.dvalue;
+						break;
+				}
+				break;
+		}
+	}	
+	| expr '*' expr	
+	{
+		switch( $1.type)
+		{
+			case INTEGER:	
+				switch( $3.type)
+				{
+				case INTEGER:
+					$$.type = INTEGER;
+					$$.lvalue = $1.lvalue * $3.lvalue;
+					break;
+				case FLOAT:
+					$$.type = FLOAT;
+					$$.dvalue = (long double) $1.lvalue * $3.dvalue;
+					break;
+				}
+				break;
+			case FLOAT:
+				switch( $3.type)
+				{
+					case INTEGER:
+						$$.type = FLOAT;
+						$$.dvalue = $1.dvalue * (long double) $3.lvalue;
+						break;
+					case FLOAT:
+						$$.type = FLOAT;
+						$$.dvalue = $1.dvalue * $3.dvalue;
+						break;
+				}
+				break;
+		}
+	}
+	| expr '/' expr	
+	{
+		switch( $1.type)
+		{
+			case INTEGER:	
+				switch( $3.type)
+				{
+				case INTEGER:
+					$$.type = INTEGER;
+					$$.lvalue = $1.lvalue / $3.lvalue;
+					break;
+				case FLOAT:
+					$$.type = FLOAT;
+					$$.dvalue = (long double) $1.lvalue / $3.dvalue;
+					break;
+				}
+				break;
+			case FLOAT:
+				switch( $3.type)
+				{
+					case INTEGER:
+						$$.type = FLOAT;
+						$$.dvalue = $1.dvalue / (long double) $3.lvalue;
+						break;
+					case FLOAT:
+						$$.type = FLOAT;
+						$$.dvalue = $1.dvalue / $3.dvalue;
+						break;
+				}
+				break;
+		}
+	}
+
 	| '(' expr ')'	{ $$ = $2; }
 	| '-' expr %prec UMINUS { $$ = - $2; }
-	| number
+	| INTEGER 
+	| FLOAT
 	;
 
-number	: NUMBER
+number	: INTEGER
+	| FLOAT
 	;
 %%
 
