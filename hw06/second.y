@@ -178,9 +178,20 @@ expr	: expr '+' expr
 	}
 
 	| '(' expr ')'	{ $$ = $2; }
-	| '-' expr %prec UMINUS { $$ = - $2; }
-	| INTEGER 
-	| FLOAT
+	| '-' expr %prec UMINUS 
+	{
+		switch( $2.type)
+		{
+			case INTEGER:
+				$$.type = INTEGER;
+				$$.lvalue = -1 * $2.lvalue;
+				break;
+			case FLOAT:
+				$$.type = FLOAT;
+				$$.dvalue = -1 * (long double) $2.dvalue;
+		}
+	}
+	| number 
 	;
 
 number	: INTEGER

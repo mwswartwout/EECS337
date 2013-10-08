@@ -22,6 +22,7 @@
 /*
  *	define yystype
  */
+#define YYSTYPE struct yycalc
 YYSTYPE
 {
 	int	type;	// holds INTEGER or FLOAT from %token
