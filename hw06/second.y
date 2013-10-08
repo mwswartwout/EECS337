@@ -204,6 +204,131 @@ expr	: expr '+' expr
 				$$.dvalue = -1 * (long double) $2.dvalue;
 		}
 	}
+	| expr '|' expr
+	{
+		$$.type = INTEGER;
+		switch( $1.type)
+		{
+			case INTEGER:
+				switch( $3.type)
+				{
+					case INTEGER:
+						$$.lvalue = $1.lvalue | $3.lvalue;
+						break;
+					case FLOAT:
+						$$.lvalue =  $1.lvalue | (long long int) $3.dvalue;
+				}
+			break;
+			case FLOAT:
+				switch( $3.type)
+				{
+					case INTEGER:
+						$$.lvalue = (long long int) $1.dvalue | $3.lvalue;
+						break;
+					case FLOAT:
+						$$.lvalue = (long long int) $1.dvalue | (long long int) $3.dvalue;
+						break;
+				}
+			break;
+		}
+	}
+	| expr '^' expr
+	{
+		$$.type = INTEGER;
+		switch( $1.type)
+		{
+			case INTEGER:
+				switch( $3.type)
+				{
+					case INTEGER:
+						$$.lvalue = $1.lvalue ^ $3.lvalue;
+						break;
+					case FLOAT:
+						$$.lvalue = $1.lvalue ^ (long long int) $3.dvalue;
+				}
+			break;
+			case FLOAT:
+				switch( $3.type)
+				{
+					case INTEGER:
+						$$.lvalue = (long long int) $1.dvalue ^ $3.lvalue;
+						break;
+					case FLOAT:
+						$$.lvalue = (long long int) $1.dvalue ^ (long long int) $3.dvalue;
+						break;
+				}
+			break;
+		}
+	}
+	| expr '&' expr	
+	{
+		$$.type = INTEGER;
+		switch( $1.type)
+		{
+			case INTEGER:
+				switch( $3.type)
+				{
+					case INTEGER:
+						$$.lvalue = $1.lvalue & $3.lvalue;
+						break;
+					case FLOAT:
+						$$.lvalue = $1.lvalue & (long long int) $3.dvalue;
+				}
+			break;
+			case FLOAT:
+				switch( $3.type)
+				{
+					case INTEGER:
+						$$.lvalue = (long long int) $1.dvalue & $3.lvalue;
+						break;
+					case FLOAT:
+						$$.lvalue = (long long int) $1.dvalue & (long long int) $3.dvalue;
+						break;
+				}
+			break;
+		}
+	}
+	| expr '%' expr
+	{
+		$$.type = INTEGER;
+		switch( $1.type)
+		{
+			case INTEGER:
+				switch( $3.type)
+				{
+					case INTEGER:
+						$$.lvalue = $1.lvalue % $3.lvalue;
+						break;
+					case FLOAT:
+						$$.lvalue = $1.lvalue % (long long int) $3.dvalue;
+				}
+			break;
+			case FLOAT:
+				switch( $3.type)
+				{
+					case INTEGER:
+						$$.lvalue = (long long int) $1.dvalue % $3.lvalue;
+						break;
+					case FLOAT:
+						$$.lvalue = (long long int) $1.dvalue % (long long int) $3.dvalue;
+						break;
+				}
+			break;
+		}
+	}
+	| '~' expr
+	{
+		$$.type = INTEGER;
+		switch( $1.type)
+		{
+			case INTEGER:
+				$$.lvalue = ~ $2.lvalue;
+				break;	
+			case FLOAT:
+				$$.lvalue = ~ (long long int) $2.dvalue;
+				break;
+		}
+	}
 	| number 
 	;
 
