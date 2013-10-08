@@ -177,7 +177,20 @@ expr	: expr '+' expr
 		}
 	}
 
-	| '(' expr ')'	{ $$ = $2; }
+	| '(' expr ')'
+	{
+		switch( $2.type)
+		{
+			case INTEGER:
+				$$.type = INTEGER;
+				$$.lvalue = $2.lvalue;
+				break;
+			case FLOAT:
+				$$.type = FLOAT;
+				$$.dvalue = $2.dvalue;
+				break;
+		}
+	}
 	| '-' expr %prec UMINUS 
 	{
 		switch( $2.type)
