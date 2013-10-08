@@ -5,7 +5,7 @@
 * DESC:		EECS 337 Assignment 6
 *      		include file for the Calculator page 295-296
 *
-* AUTHOR:	caseid
+* AUTHOR:	mws85
 *
 * DATE:		October 8, 2013
 *
@@ -22,9 +22,14 @@
 /*
  *	define yystype
  */
-#ifndef YYSTYPE
-#define	 YYSTYPE	double	/* double type for yacc stack */
-#endif
+YYSTYPE
+{
+	int	type;	// holds INTEGER or FLOAT from %token
+	long long	lvalue; 	//holds INTEGER value
+	long double	dvalue;		// holds FLOAT value
+};
+
+
 
 
 /*
