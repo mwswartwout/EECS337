@@ -7,7 +7,7 @@
 *
 * AUTHOR:	mws85
 *
-* DATE:		October 151515151515151515151515151515, 2013
+* DATE:		October 15, 2013
 *
 *
 * EDIT HISTORY:	
@@ -24,11 +24,27 @@ IS	(u|U|l|L)*
 #include	"yystype.h"
 #include	"y.tab.h"
 
-#define MAx_IDENTIFIERS 128
+#define MAX_IDENTIFIERS 128
 SYMBOL_TABLE symbol_tables[ MAX_IDENTIFIERS];
 unsigned int symbol_table_index = 0;
-%}
 
+int	identifier( char *buffer, unsigned int length)
+{
+	int i;
+	for ( i = 0; i < MAX_IDENTIFIERS; i++)
+	{
+		if( !strncmp( buffer, symbol_tables[i].buffer, length))
+			return i;
+	}
+
+	symbol_table_index++;
+	symbol_tables[symbol_table_index].length = length;
+	strcpy( symbol_tables[symbol_table_index].buffer, buffer);
+	symbol_tables[symbol_table_index].yylval.type = IDENTIFIER;
+	symbol_tables[symbol_table_index].yylval.index = symbol_table_index;
+	return symbol_table_index;
+}
+%}
 
 %%
 
@@ -39,6 +55,7 @@ unsigned int symbol_table_index = 0;
 {D}+{E}{FS}? 	{sscanf( yytext, "%Lf", &yylval.dvalue); yylval.type = FLOAT; return( FLOAT); }
 {D}*"."{D}+({E})?{FS}? { sscanf( yytext, "%Lf", &yylval.dvalue); yylval.type = FLOAT; return( FLOAT); } 
 {D}+"."{D}*({E})?{FS}? {sscanf( yytext, "%Lf", &yylval.dvalue); yylval.type = FLOAT; return( FLOAT); }
+{L}({L}|{D})*	{ yylval.type = IDENTIFIER; yylval.index = identifier( yytext, yyleng + 1); return( IDENTIFIER); }
 \n|.		{ return( yytext[ 0]); /* return everything else */ }
 
 
