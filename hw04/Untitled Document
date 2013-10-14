@@ -1,0 +1,49 @@
+hw04 answers:
+Problem 1:
+char	1
+short 2
+int 4
+long 8
+long long 8
+signed 4
+unsigned 4
+float 4
+double 8
+long double 16
+const 4
+volatile 4
+struct 8
+union 8
+enum 2
+unsigned int 4
+0xf 4
+0xf1 4
+0xfu 4
+0xful 4
+0123 8
+0123l 4
+0123u 8
+0123ul 4
+'a'8
+'\x61' 4
+'\141' 8
+'aa' 4
+'aaa' 8
+'aaaa' 4
+1.2e3f 4
+1.2e3 8
+1.2e4l 8
+
+
+Problem 2:
+volatile
+
+Problem 3:
+It looks for two letters or a digit, followed by anything. The ansi_c looks for a digit followed by decimal point of exponent
+
+Problem 4:
+1.23e4
+1.23e4l
+
+Problem 5:
+No idea

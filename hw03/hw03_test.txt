@@ -1,0 +1,73 @@
+rm -f scan.c gram.c y.tab.h y.output *.o
+yacc -dv gram.y 
+yacc: 1 shift/reduce conflict.
+mv -f y.tab.c gram.c
+gcc -g   -c -o gram.o gram.c
+lex  -t scan.l > scan.c
+gcc -g   -c -o scan.o scan.c
+gcc -g   -c -o main.o main.c
+gcc -g gram.o scan.o main.o -o ansi_c
+rm gram.c scan.c
+for mws85  start time: Mon Sep 16 23:32:13 2013
+token: INT text: int
+token: IDENTIFIER text: x
+token: '=' text: =
+token: CONSTANT text: 2
+token: ';' text: ;
+token: VOID text: void
+token: IDENTIFIER text: b
+token: '(' text: (
+token: ')' text: )
+token: '{' text: {
+token: IDENTIFIER text: x
+token: '=' text: =
+token: '(' text: (
+token: IDENTIFIER text: x
+token: '+' text: +
+token: CONSTANT text: 1
+token: ')' text: )
+token: ';' text: ;
+token: IDENTIFIER text: printf
+token: '(' text: (
+token: STRING_LITERAL text: "%d\n"
+token: ',' text: ,
+token: IDENTIFIER text: x
+token: ')' text: )
+token: ';' text: ;
+token: '}' text: }
+token: VOID text: void
+token: IDENTIFIER text: c
+token: '(' text: (
+token: ')' text: )
+token: '{' text: {
+token: INT text: int
+token: IDENTIFIER text: x
+token: '=' text: =
+token: CONSTANT text: 1
+token: ';' text: ;
+token: IDENTIFIER text: printf
+token: '(' text: (
+token: STRING_LITERAL text: "%d\n"
+token: ',' text: ,
+token: '(' text: (
+token: IDENTIFIER text: x
+token: '+' text: +
+token: CONSTANT text: 1
+token: ')' text: )
+token: ')' text: )
+token: ';' text: ;
+token: '}' text: }
+token: VOID text: void
+token: IDENTIFIER text: main
+token: '(' text: (
+token: ')' text: )
+token: '{' text: {
+token: IDENTIFIER text: b
+token: '(' text: (
+token: ')' text: )
+token: ';' text: ;
+token: IDENTIFIER text: c
+token: '(' text: (
+token: ')' text: )
+token: ';' text: ;
+token: '}' text: }

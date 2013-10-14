@@ -1,0 +1,201 @@
+rm -f scan.c gram.c y.tab.h y.output *.o
+yacc -dv gramNFA.y 
+mv -f y.tab.c gramNFA.c
+gcc -g   -c -o gramNFA.o gramNFA.c
+lex  -t scan.l > scan.c
+gcc -g   -c -o scan.o scan.c
+gcc -g   -c -o main.o main.c
+gcc -g gramNFA.o scan.o main.o -o hw05testNFA
+cp y.output yNFA.output
+yacc -dv gramDFA.y 
+mv -f y.tab.c gramDFA.c
+gcc -g   -c -o gramDFA.o gramDFA.c
+gcc -g gramDFA.o scan.o main.o -o hw05testDFA
+cp y.output yDFA.output
+rm gramNFA.c gramDFA.c scan.c
+Starting parse
+Entering state 0
+Reading a token: Next token is token 'a' ()
+Shifting token 'a' ()
+Entering state 2
+Reducing stack by rule 12 (line 41):
+   $1 = token 'a' ()
+-> $$ = nterm aletter ()
+Stack now 0
+Entering state 6
+Reading a token: Next token is token 'b' ()
+Shifting token 'b' ()
+Entering state 3
+Reducing stack by rule 13 (line 43):
+   $1 = token 'b' ()
+-> $$ = nterm bletter ()
+Stack now 0 6
+Entering state 14
+Reading a token: Next token is token 'a' ()
+Shifting token 'a' ()
+Entering state 2
+Reducing stack by rule 12 (line 41):
+   $1 = token 'a' ()
+-> $$ = nterm aletter ()
+Stack now 0 6 14
+Entering state 19
+Reading a token: Next token is token '\n' ()
+Reducing stack by rule 11 (line 39):
+-> $$ = nterm A3 ()
+Stack now 0 6 14 19
+Entering state 21
+Reducing stack by rule 9 (line 36):
+   $1 = nterm aletter ()
+   $2 = nterm A3 ()
+-> $$ = nterm A2 ()
+Stack now 0 6 14
+Entering state 18
+Reducing stack by rule 8 (line 34):
+   $1 = nterm bletter ()
+   $2 = nterm A2 ()
+-> $$ = nterm A1 ()
+Stack now 0 6
+Entering state 13
+Reducing stack by rule 6 (line 31):
+   $1 = nterm aletter ()
+   $2 = nterm A1 ()
+-> $$ = nterm A0 ()
+Stack now 0
+Entering state 5
+Next token is token '\n' ()
+Shifting token '\n' ()
+Entering state 11
+Reducing stack by rule 1 (line 25):
+   $1 = nterm A0 ()
+   $2 = token '\n' ()
+-> $$ = nterm line ()
+Stack now 0
+Entering state 4
+Reading a token: Now at end of input.
+Shifting token $end ()
+Entering state 9
+Stack now 0 4 9
+Cleanup: popping token $end ()
+Cleanup: popping nterm line ()
+for mws85 start time: Mon Sep 30 22:14:58 2013
+NFA A0: accept
+for mws85 start time: Mon Sep 30 22:14:58 2013
+NFA A0: accept
+NFA A0: accept
+NFA A0: accept
+NFA A0: accept
+NFA A0: accept
+NFA A0: accept
+NFA A0: accept
+NFA A0: accept
+NFA A0: accept
+NFA A0: accept
+NFA A0: accept
+NFA A0: accept
+NFA A0: accept
+NFA A0: accept
+NFA A0: accept
+NFA A0: accept
+for mws85 start time: Mon Sep 30 22:14:58 2013
+
+^
+syntax error
+
+^
+syntax error
+
+^
+syntax error
+Error: compiler errors: 4
+Error: exit: 4
+
+^
+syntax error
+Starting parse
+Entering state 0
+Reading a token: Next token is token 'a' ()
+Shifting token 'a' ()
+Entering state 2
+Reducing stack by rule 18 (line 49):
+   $1 = token 'a' ()
+-> $$ = nterm aletter ()
+Stack now 0
+Entering state 6
+Reading a token: Next token is token 'b' ()
+Shifting token 'b' ()
+Entering state 3
+Reducing stack by rule 19 (line 51):
+   $1 = token 'b' ()
+-> $$ = nterm bletter ()
+Stack now 0 6
+Entering state 14
+Reading a token: Next token is token 'a' ()
+Shifting token 'a' ()
+Entering state 2
+Reducing stack by rule 18 (line 49):
+   $1 = token 'a' ()
+-> $$ = nterm aletter ()
+Stack now 0 6 14
+Entering state 18
+Reading a token: Next token is token '\n' ()
+Reducing stack by rule 13 (line 41):
+-> $$ = nterm A3 ()
+Stack now 0 6 14 18
+Entering state 21
+Reducing stack by rule 9 (line 36):
+   $1 = nterm aletter ()
+   $2 = nterm A3 ()
+-> $$ = nterm A2 ()
+Stack now 0 6 14
+Entering state 20
+Reducing stack by rule 8 (line 34):
+   $1 = nterm bletter ()
+   $2 = nterm A2 ()
+-> $$ = nterm A1 ()
+Stack now 0 6
+Entering state 12
+Reducing stack by rule 4 (line 29):
+   $1 = nterm aletter ()
+   $2 = nterm A1 ()
+-> $$ = nterm A0 ()
+Stack now 0
+Entering state 5
+Next token is token '\n' ()
+Shifting token '\n' ()
+Entering state 11
+Reducing stack by rule 1 (line 25):
+   $1 = nterm A0 ()
+   $2 = token '\n' ()
+-> $$ = nterm line ()
+Stack now 0
+Entering state 4
+Reading a token: Now at end of input.
+Shifting token $end ()
+Entering state 9
+Stack now 0 4 9
+Cleanup: popping token $end ()
+Cleanup: popping nterm line ()
+for mws85 start time: Mon Sep 30 22:14:58 2013
+DFA A3: accept
+for mws85 start time: Mon Sep 30 22:14:58 2013
+DFA A3: accept
+DFA A3: accept
+DFA A3: accept
+DFA A3: accept
+DFA A5: accept
+DFA A4: accept
+DFA A5: accept
+DFA A4: accept
+DFA A5: accept
+DFA A4: accept
+DFA A5: accept
+DFA A4: accept
+DFA A3: accept
+DFA A3: accept
+DFA A3: accept
+DFA A3: accept
+for mws85 start time: Mon Sep 30 22:14:58 2013
+DFA A3: accept
+DFA A3: accept
+DFA A3: accept
+DFA A3: accept
