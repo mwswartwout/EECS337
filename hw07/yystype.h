@@ -28,6 +28,7 @@ YYSTYPE
 	int	type;	// holds INTEGER or FLOAT from %token
 	long long	lvalue; 	//holds INTEGER value
 	long double	dvalue;		// holds FLOAT value
+	int	index; // index into static symbol table
 };
 
 #define SYMBOL_TABLE struct symbol_table

@@ -39,13 +39,15 @@
    enum yytokentype {
      INTEGER = 258,
      FLOAT = 259,
-     UMINUS = 260
+     IDENTIFIER = 260,
+     UMINUS = 261
    };
 #endif
 /* Tokens.  */
 #define INTEGER 258
 #define FLOAT 259
-#define UMINUS 260
+#define IDENTIFIER 260
+#define UMINUS 261
 
 
 

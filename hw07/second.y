@@ -23,6 +23,7 @@
 
 %token INTEGER
 %token FLOAT
+%token IDENTIFIER
 
 %left '|'
 %left '^'

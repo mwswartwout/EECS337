@@ -1,3 +1,8 @@
+Terminals unused in grammar
+
+   IDENTIFIER
+
+
 Grammar
 
     0 $accept: lines $end
@@ -41,19 +46,20 @@ $end (0) 0
 error (256) 2
 INTEGER (258) 16
 FLOAT (259) 17
-UMINUS (260)
+IDENTIFIER (260)
+UMINUS (261)
 
 
 Nonterminals, with rules where they appear
 
-$accept (18)
+$accept (19)
     on left: 0
-lines (19)
+lines (20)
     on left: 1 2 3, on right: 0 1 2
-expr (20)
+expr (21)
     on left: 4 5 6 7 8 9 10 11 12 13 14 15, on right: 1 4 5 6 7 8 9
     10 11 12 13 14
-number (21)
+number (22)
     on left: 16 17, on right: 15
 
 
