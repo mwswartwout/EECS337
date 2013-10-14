@@ -7,7 +7,7 @@
 *
 * AUTHOR:	mws85
 *
-* DATE:		October 8, 2013
+* DATE:		October 151515151515151515151515151515, 2013
 *
 *
 * EDIT HISTORY:	
@@ -24,7 +24,11 @@ IS	(u|U|l|L)*
 #include	"yystype.h"
 #include	"y.tab.h"
 
+#define MAx_IDENTIFIERS 128
+SYMBOL_TABLE symbol_tables[ MAX_IDENTIFIERS];
+unsigned int symbol_table_index = 0;
 %}
+
 
 %%
 
