@@ -33,6 +33,9 @@
 %right UMINUS '~' /* supplies precedence for unary minus */
 
 %% 	/* beginning of rules section */
+ident:
+	printf( "%s\n", symbol_tables[ $2.index].buffer);
+	break;
 
 lines	: lines expr '\n' 
 	{
@@ -47,6 +50,10 @@ lines	: lines expr '\n'
 		}
 	}
 	| lines error '\n' { yyerror(" reenter previous line: "); yyerrok; }
+	| lines ident '=' expr '\n'
+	{
+		symbol_tables[ $2.index].yylval = $4;
+	}
         | /* empty */
 	;
 expr	: expr '+' expr	
@@ -331,10 +338,17 @@ expr	: expr '+' expr
 		}
 	}
 	| number 
+	| ident
+	{
+		$$ = symbol_tables[ $1.index].yylval;
+	}
 	;
 
 number	: INTEGER
 	| FLOAT
+	;
+
+ident	: IDENTIFIER
 	;
 %%
 
