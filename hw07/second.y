@@ -33,10 +33,6 @@
 %right UMINUS '~' /* supplies precedence for unary minus */
 
 %% 	/* beginning of rules section */
-ident:
-	printf( "%s\n", symbol_tables[ $2.index].buffer);
-	break;
-
 lines	: lines expr '\n' 
 	{
 		switch( $2.type)
@@ -46,6 +42,9 @@ lines	: lines expr '\n'
 				break;
 			case FLOAT:
 				printf("%Lg\n", $2.dvalue);
+				break;
+			case IDENTIFIER:
+				printf( "%s\n", symbol_tables[ $2.index].buffer);		
 				break;
 		}
 	}
