@@ -1,6 +1,6 @@
 /*******************************************************************************
 *
-* FILE:		first.l
+* FILE:		lex.l
 *
 * DESC:		EECS 337 Assignment 6
 *      		Scanner program for the Calculator page 296-296
@@ -24,27 +24,8 @@ IS	(u|U|l|L)*
 #include	"yystype.h"
 #include	"y.tab.h"
 
-#define MAX_IDENTIFIERS 128
-SYMBOL_TABLE symbol_tables[ MAX_IDENTIFIERS];
-unsigned int symbol_table_index = 0;
+#include 	"symbol_table.c"
 
-int	identifier( char *buffer, unsigned int length)
-{
-	int i;
-	for ( i = 0; i < symbol_table_index; i++)
-	{
-		if( !strcmp( buffer, symbol_tables[i].buffer))
-			return i;
-	}
-
-	strcpy( symbol_tables[symbol_table_index].buffer, buffer);
-	symbol_tables[symbol_table_index].length = length;
-	symbol_tables[symbol_table_index].yylval.type = IDENTIFIER;
-	symbol_tables[symbol_table_index].yylval.index = symbol_table_index;
-	symbol_table_index++;
-	return symbol_table_index;
-
-}
 %}
 
 %%
