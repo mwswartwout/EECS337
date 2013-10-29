@@ -207,6 +207,13 @@ int	next_label( void)
  */
 QUAD	*new_quad1( int operator, QUAD *q1, QUAD *q2)
 {
+  QUAD *quad;
+  QUAD *last1 = end_quad_list( q1);
+  QUAD *last2 = end_quad_list( q2);
+  quad = new_quad( operator, TYPE_TEMPORARY, next_temp(), last1->dst_type, last1->dst_index, last2->dst_type, last2->dst_index);
+
+  last1->next = q2;
+  last2->next = quad;
 	return q1;
 }
 
@@ -216,6 +223,11 @@ QUAD	*new_quad1( int operator, QUAD *q1, QUAD *q2)
  */
 QUAD	*new_quad2( int operator, QUAD *q1)
 {
+  QUAD *quad;
+  QUAD *quad1 = end_quad_list( q1);
+  quad = new_quad( operator, quad1->dst_type, quad1->dst_index, 0, 0, 0, 0);
+
+  q1->next = quad;
 	return q1;
 }
 /*
@@ -224,5 +236,15 @@ QUAD	*new_quad2( int operator, QUAD *q1)
  */
 QUAD	*new_quad3( int operator, int index, QUAD *q1)
 {
+  QUAD *quad;
+  if ( q1 == 0){
+          quad = new_quad(operator, TYPE_TEMPORARY, next_temp(), data.st[ index].type, index, 0, 0);
+    return quad;
+  }
+  else {
+    QUAD *quad1 = end_quad_list( q1);
+    quad = new_quad( operator, data.st[ index].type, index, quad1->dst_type, quad1->dst_index, 0, 0);
+    quad1->next = quad;
+  }
 	return q1;
 }
