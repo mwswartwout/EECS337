@@ -1,6 +1,6 @@
 /*******************************************************************************
 *
-* FILE:		second.y 
+* FILE:		yacc.y 
 *
 * DESC:		EECS 337 Assignment 6
 *      		yacc program for the Calculator page 295-296
@@ -21,8 +21,7 @@
 
 %start lines
 
-%token INTEGER
-%token FLOAT
+%token CONSTANT
 %token IDENTIFIER
 
 %left '|'
@@ -33,28 +32,19 @@
 %right UMINUS '~' /* supplies precedence for unary minus */
 
 %% 	/* beginning of rules section */
-lines	: lines expr '\n' 
+lines	: lines stmts '\n'
 	{
-		switch( $2.type)
-		{
-			case INTEGER:
-				printf("%Ld\n", $2.lvalue);
-				break;
-			case FLOAT:
-				printf("%Lg\n", $2.dvalue);
-				break;
-			case IDENTIFIER:
-				printf( "%s\n", symbol_tables[ $2.index].buffer);		
-				break;
-		}
-	}
-	| lines ident '=' expr '\n'
+		print_quad_list( $2.quad);
+		free_quad_list( $2.quad);
+	} 
+	| lines error '\n' { yyerror(" reenter previous line: "); yyerrok; }
+	| 
+	;
+stmts 	: expr
+	| ident '=' expr
 	{
-		symbol_tables[ $2.index].yylval = $4;
+		$$.quad = new_quad3( '=', $1.index, $3.quad);
 	}
-	| lines '\n'
-	| /* empty */
-	| error '\n' { yyerror(" reenter previous line: "); yyerrok; }
 	;
 expr	: expr '+' expr	
 	{
