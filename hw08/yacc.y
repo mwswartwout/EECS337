@@ -48,284 +48,45 @@ stmts 	: expr
 	;
 expr	: expr '+' expr	
 	{
-		switch( $1.type)
-		{
-			case INTEGER:	
-				switch( $3.type)
-				{
-				case INTEGER:
-					$$.type = INTEGER;
-					$$.lvalue = $1.lvalue + $3.lvalue;
-					break;
-				case FLOAT:
-					$$.type = FLOAT;
-					$$.dvalue = (long double) $1.lvalue + $3.dvalue;
-					break;
-				}
-				break;
-			case FLOAT:
-				switch( $3.type)
-				{
-					case INTEGER:
-						$$.type = FLOAT;
-						$$.dvalue = $1.dvalue + (long double) $3.lvalue;
-						break;
-					case FLOAT:
-						$$.type = FLOAT;
-						$$.dvalue = $1.dvalue + $3.dvalue;
-						break;
-				}
-				break;
-		}
+		$$.quad = new_quad1( '+', $1.quad, $3.quad);	
 	}
 	| expr '-' expr
 	{
-		switch( $1.type)
-		{
-			case INTEGER:	
-				switch( $3.type)
-				{
-				case INTEGER:
-					$$.type = INTEGER;
-					$$.lvalue = $1.lvalue - $3.lvalue;
-					break;
-				case FLOAT:
-					$$.type = FLOAT;
-					$$.dvalue = (long double) $1.lvalue - $3.dvalue;
-					break;
-				}
-				break;
-			case FLOAT:
-				switch( $3.type)
-				{
-					case INTEGER:
-						$$.type = FLOAT;
-						$$.dvalue = $1.dvalue - (long double) $3.lvalue;
-						break;
-					case FLOAT:
-						$$.type = FLOAT;
-						$$.dvalue = $1.dvalue - $3.dvalue;
-						break;
-				}
-				break;
-		}
+		$$.quad = new_quad1( '-', $1.quad, $3.quad);
 	}	
 	| expr '*' expr	
 	{
-		switch( $1.type)
-		{
-			case INTEGER:	
-				switch( $3.type)
-				{
-				case INTEGER:
-					$$.type = INTEGER;
-					$$.lvalue = $1.lvalue * $3.lvalue;
-					break;
-				case FLOAT:
-					$$.type = FLOAT;
-					$$.dvalue = (long double) $1.lvalue * $3.dvalue;
-					break;
-				}
-				break;
-			case FLOAT:
-				switch( $3.type)
-				{
-					case INTEGER:
-						$$.type = FLOAT;
-						$$.dvalue = $1.dvalue * (long double) $3.lvalue;
-						break;
-					case FLOAT:
-						$$.type = FLOAT;
-						$$.dvalue = $1.dvalue * $3.dvalue;
-						break;
-				}
-				break;
-		}
+		$$.quad = new_quad1( '*', $1.quad, $3.quad);
 	}
 	| expr '/' expr	
 	{
-		switch( $1.type)
-		{
-			case INTEGER:	
-				switch( $3.type)
-				{
-				case INTEGER:
-					$$.type = INTEGER;
-					$$.lvalue = $1.lvalue / $3.lvalue;
-					break;
-				case FLOAT:
-					$$.type = FLOAT;
-					$$.dvalue = (long double) $1.lvalue / $3.dvalue;
-					break;
-				}
-				break;
-			case FLOAT:
-				switch( $3.type)
-				{
-					case INTEGER:
-						$$.type = FLOAT;
-						$$.dvalue = $1.dvalue / (long double) $3.lvalue;
-						break;
-					case FLOAT:
-						$$.type = FLOAT;
-						$$.dvalue = $1.dvalue / $3.dvalue;
-						break;
-				}
-				break;
-		}
+		$$.quad = new_quad1( '/', $1.quad, $3.quad);
 	}
-
+	
 	| '(' expr ')'
 	{
-		switch( $2.type)
-		{
-			case INTEGER:
-				$$.type = INTEGER;
-				$$.lvalue = $2.lvalue;
-				break;
-			case FLOAT:
-				$$.type = FLOAT;
-				$$.dvalue = $2.dvalue;
-				break;
-		}
+		free_quad( $1.quad);	 
 	}
-	| '-' expr %prec UMINUS 
-	{
-		switch( $2.type)
-		{
-			case INTEGER:
-				$$.type = INTEGER;
-				$$.lvalue = -1 * $2.lvalue;
-				break;
-			case FLOAT:
-				$$.type = FLOAT;
-				$$.dvalue = -1 * (long double) $2.dvalue;
-		}
-	}
+
 	| expr '|' expr
 	{
-		$$.type = INTEGER;
-		switch( $1.type)
-		{
-			case INTEGER:
-				switch( $3.type)
-				{
-					case INTEGER:
-						$$.lvalue = $1.lvalue | $3.lvalue;
-						break;
-					case FLOAT:
-						$$.lvalue =  $1.lvalue | (long long int) $3.dvalue;
-				}
-			break;
-			case FLOAT:
-				switch( $3.type)
-				{
-					case INTEGER:
-						$$.lvalue = (long long int) $1.dvalue | $3.lvalue;
-						break;
-					case FLOAT:
-						$$.lvalue = (long long int) $1.dvalue | (long long int) $3.dvalue;
-						break;
-				}
-			break;
-		}
+		$$.quad = new_quad1( '|', $1.quad, $3.quad);
 	}
 	| expr '^' expr
 	{
-		$$.type = INTEGER;
-		switch( $1.type)
-		{
-			case INTEGER:
-				switch( $3.type)
-				{
-					case INTEGER:
-						$$.lvalue = $1.lvalue ^ $3.lvalue;
-						break;
-					case FLOAT:
-						$$.lvalue = $1.lvalue ^ (long long int) $3.dvalue;
-				}
-			break;
-			case FLOAT:
-				switch( $3.type)
-				{
-					case INTEGER:
-						$$.lvalue = (long long int) $1.dvalue ^ $3.lvalue;
-						break;
-					case FLOAT:
-						$$.lvalue = (long long int) $1.dvalue ^ (long long int) $3.dvalue;
-						break;
-				}
-			break;
-		}
+		$$.quad = new_quad1( '^', $1.quad, $3.quad);
 	}
 	| expr '&' expr	
 	{
-		$$.type = INTEGER;
-		switch( $1.type)
-		{
-			case INTEGER:
-				switch( $3.type)
-				{
-					case INTEGER:
-						$$.lvalue = $1.lvalue & $3.lvalue;
-						break;
-					case FLOAT:
-						$$.lvalue = $1.lvalue & (long long int) $3.dvalue;
-				}
-			break;
-			case FLOAT:
-				switch( $3.type)
-				{
-					case INTEGER:
-						$$.lvalue = (long long int) $1.dvalue & $3.lvalue;
-						break;
-					case FLOAT:
-						$$.lvalue = (long long int) $1.dvalue & (long long int) $3.dvalue;
-						break;
-				}
-			break;
-		}
+		$$.quad = new_quad1( '&', $1.quad, $3.quad);
 	}
 	| expr '%' expr
 	{
-		$$.type = INTEGER;
-		switch( $1.type)
-		{
-			case INTEGER:
-				switch( $3.type)
-				{
-					case INTEGER:
-						$$.lvalue = $1.lvalue % $3.lvalue;
-						break;
-					case FLOAT:
-						$$.lvalue = $1.lvalue % (long long int) $3.dvalue;
-				}
-			break;
-			case FLOAT:
-				switch( $3.type)
-				{
-					case INTEGER:
-						$$.lvalue = (long long int) $1.dvalue % $3.lvalue;
-						break;
-					case FLOAT:
-						$$.lvalue = (long long int) $1.dvalue % (long long int) $3.dvalue;
-						break;
-				}
-			break;
-		}
+		$$.quad = new_quad1( '%', $1.quad, $3.quad);
 	}
 	| '~' expr
 	{
-		$$.type = INTEGER;
-		switch( $1.type)
-		{
-			case INTEGER:
-				$$.lvalue = ~ $2.lvalue;
-				break;	
-			case FLOAT:
-				$$.lvalue = ~ (long long int) $2.dvalue;
-				break;
-		}
+		$$.quad = new_quad2( '~', $2.quad);
 	}
 	| number 
 	| ident
@@ -334,8 +95,7 @@ expr	: expr '+' expr
 	}
 	;
 
-number	: INTEGER
-	| FLOAT
+number	: CONSTANT
 	;
 
 ident	: IDENTIFIER
