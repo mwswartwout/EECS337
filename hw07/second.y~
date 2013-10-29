@@ -44,7 +44,7 @@ lines	: lines expr '\n'
 				printf("%Lg\n", $2.dvalue);
 				break;
 			case IDENTIFIER:
-				printf( "%s\n", symbol_tables[ $2.index].buffer);		
+				printf( "%d\n", symbol_tables[ $2.index].yylval.type);		
 				break;
 		}
 	}
@@ -52,9 +52,8 @@ lines	: lines expr '\n'
 	{
 		symbol_tables[ $2.index].yylval = $4;
 	}
-	| lines '\n'
-	| /* empty */
-	| error '\n' { yyerror(" reenter previous line: "); yyerrok; }
+	| lines error '\n' { yyerror(" reenter previous line: "); yyerrok; }
+        | /* empty */
 	;
 expr	: expr '+' expr	
 	{

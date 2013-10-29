@@ -1,0 +1,121 @@
+rm -f first.c second.c y.tab.h y.output *.o
+yacc -dv second.y 
+mv -f y.tab.c second.c
+gcc -g   -c -o second.o second.c
+lex  -t first.l > first.c
+gcc -g   -c -o first.o first.c
+gcc -g   -c -o calc.o calc.c
+gcc -g second.o first.o calc.o -lm -o calc
+rm first.c second.c
+for mws85 start time: Tue Oct 15 12:44:33 2013
+SIZEOF int: 4 long: 8 long long: 8 float: 4 double: 8, long double: 16
+Enter calculator expression and $ to exit
+a
+for mws85 start time: Tue Oct 15 12:44:33 2013
+SIZEOF int: 4 long: 8 long long: 8 float: 4 double: 8, long double: 16
+Enter calculator expression and $ to exit
+a
+b
+c
+d
+e
+f
+g
+h
+a
+for mws85 start time: Tue Oct 15 12:44:33 2013
+SIZEOF int: 4 long: 8 long long: 8 float: 4 double: 8, long double: 16
+Enter calculator expression and $ to exit
+a
+b
+c
+d
+e
+f
+g
+h
+a
+for mws85 start time: Tue Oct 15 12:44:33 2013
+SIZEOF int: 4 long: 8 long long: 8 float: 4 double: 8, long double: 16
+Enter calculator expression and $ to exit
+a
+b
+c
+d
+e
+f
+g
+h
+a
+for mws85 start time: Tue Oct 15 12:44:33 2013
+SIZEOF int: 4 long: 8 long long: 8 float: 4 double: 8, long double: 16
+Enter calculator expression and $ to exit
+a
+b
+c
+d
+e
+f
+g
+h
+a
+for mws85 start time: Tue Oct 15 12:44:33 2013
+SIZEOF int: 4 long: 8 long long: 8 float: 4 double: 8, long double: 16
+Enter calculator expression and $ to exit
+a
+b
+c
+d
+e
+f
+g
+h
+a
+for mws85 start time: Tue Oct 15 12:44:33 2013
+SIZEOF int: 4 long: 8 long long: 8 float: 4 double: 8, long double: 16
+Enter calculator expression and $ to exit
+a
+b
+c
+d
+e
+f
+g
+h
+a
+for mws85 start time: Tue Oct 15 12:44:33 2013
+SIZEOF int: 4 long: 8 long long: 8 float: 4 double: 8, long double: 16
+Enter calculator expression and $ to exit
+a
+b
+c
+d
+e
+f
+g
+h
+a
+for mws85 start time: Tue Oct 15 12:44:33 2013
+SIZEOF int: 4 long: 8 long long: 8 float: 4 double: 8, long double: 16
+Enter calculator expression and $ to exit
+a
+b
+c
+d
+e
+f
+g
+h
+a
+for mws85 start time: Tue Oct 15 12:44:33 2013
+SIZEOF int: 4 long: 8 long long: 8 float: 4 double: 8, long double: 16
+Enter calculator expression and $ to exit
+a
+b
+c
+d
+e
+f
+g
+h
+a
