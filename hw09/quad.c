@@ -171,7 +171,7 @@ void	print_quad( QUAD *quad)
 	     printf( "=");
 	     print_quad_operand( quad->op1_type, quad->op1_index);
 	     printf( "%s ", relational[ quad->operator - LE]);
-	     print_quad_operan( quad->op2_type, quad->op2_index);
+	     print_quad_operand( quad->op2_type, quad->op2_index);
 	     break; 
 	case UMINUS:
 	     printf( "\t");
@@ -196,23 +196,23 @@ void	print_quad( QUAD *quad)
 		printf( "IFTRUE");
 		print_quad_operand( quad->dst_type, quad->dst_index);
 		printf( "GOTO" );
-		print_quad_operan( quad->op1_type, quad->op1_index);
+		print_quad_operand( quad->op1_type, quad->op1_index);
 		break;
 	case IFFALSE:
 		printf( "\t");
 		printf( "IFFALSE ");
-		print_quad_operand( quad->dst_type,
+		print_quad_operand( quad->dst_type, quad->dst_index);
 		printf( " GOTO ");
-		print_quad_operand( quad->op1_type,
+		print_quad_operand( quad->op1_type, quad->op1_index);
 		break;
 	case LABEL:
-		print_quad_operand( quad->dst_type,
+		print_quad_operand( quad->dst_type, quad->dst_index);
 		printf( ": ");
 		break;
 	case GOTO:
 		printf( "\t");
 		printf( "GOTO ");
-		print_quad_operand( quad->dst_type,
+		print_quad_operand( quad->dst_type, quad->dst_index);
 		break;
 	}
 	printf( "\n");
