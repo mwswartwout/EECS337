@@ -32,12 +32,12 @@ IS	(u|U|l|L)*
 
 "$"		{ return( EOF); }
 {L}({L}|{D})*	{ yylval.index = install( TYPE_IDENTIFIER, yytext, yyleng + 1, FORMAT_NONE); return( IDENTIFIER); }
-0[xX]{H}+{IS}?	{ yylval.index = install( TYPE_IDENTIFIER, yytext, yyleng + 1, FORMAT_HEXADECIMAL); return( CONSTANT);} 
-0{D}+{IS}? 	{ yylval.index = install( TYPE_IDENTIFIER, yytext, yyleng + 1, FORMAT_OCTAL): return( CONSTANT); }
-{D}+{IS}? 	{ yylval.index = install( TYPE_IDENTIFIER, yytext, yyleng + 1, FORMAT_DECIMAL); return( CONSTANT); }
-{D}+{E}{FS}? 	{ yylval.index = install( TYPE_IDENTIFIER, yytext, yyleng + 1, FORMAT_FLOAT): return( CONSTANT); }
-{D}*"."{D}+({E})?{FS}? { yylval.index = install( TYPE_IDENTIFIER, yytext, yyleng + 1, FORMAT_FLOAT): return( CONSTANT); } 
-{D}+"."{D}*({E})?{FS}? { yylval.index = install( TYPE_IDENTIFIER, yytext, yyleng + 1, FORMAT_FLOAT): return( CONSTANT);}
+0[xX]{H}+{IS}?	{ yylval.index = install( TYPE_CONSTANT, yytext, yyleng + 1, FORMAT_HEXADECIMAL); return( CONSTANT);} 
+0{D}+{IS}? 	{ yylval.index = install( TYPE_CONSTANT, yytext, yyleng + 1, FORMAT_OCTAL); return( CONSTANT); }
+{D}+{IS}? 	{ yylval.index = install( TYPE_CONSTANT, yytext, yyleng + 1, FORMAT_DECIMAL); return( CONSTANT); }
+{D}+{E}{FS}? 	{ yylval.index = install( TYPE_CONSTANT, yytext, yyleng + 1, FORMAT_FLOAT); return( CONSTANT); }
+{D}*"."{D}+({E})?{FS}? { yylval.index = install( TYPE_CONSTANT, yytext, yyleng + 1, FORMAT_FLOAT); return( CONSTANT); } 
+{D}+"."{D}*({E})?{FS}? { yylval.index = install( TYPE_CONSTANT, yytext, yyleng + 1, FORMAT_FLOAT); return( CONSTANT);}
 " "		{/* Do nothing*/}
 \n|.		{ return( yytext[ 0]); /* return everything else */ }
 

@@ -65,7 +65,7 @@ expr	: expr '+' expr
 	
 	| '(' expr ')'
 	{
-		free_quad( $1.quad);	 
+		$$.quad = $2.quad;	 
 	}
 
 	| expr '|' expr
@@ -84,14 +84,18 @@ expr	: expr '+' expr
 	{
 		$$.quad = new_quad1( '%', $1.quad, $3.quad);
 	}
-	| '~' expr
+	| '~' expr %prec UMINUS
 	{
-		$$.quad = new_quad2( '~', $2.quad);
+		$$.quad = new_quad2( UMINUS, $2.quad);
 	}
 	| number 
+	{
+		$$.quad = new_quad3( '=', $1.index, 0);
+	}
+
 	| ident
 	{
-		$$ = symbol_tables[ $1.index].yylval;
+		$$.quad = new_quad3( '=', $1.index, 0);
 	}
 	;
 

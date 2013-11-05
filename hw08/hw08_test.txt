@@ -1,0 +1,158 @@
+rm -f lex.c yacc.c y.tab.h y.output *.o
+yacc -dv yacc.y 
+mv -f y.tab.c yacc.c
+gcc -g   -c -o yacc.o yacc.c
+lex  -t lex.l > lex.c
+gcc -g   -c -o lex.o lex.c
+gcc -g   -c -o main.o main.c
+gcc -g   -c -o quad.o quad.c
+gcc -g yacc.o lex.o main.o quad.o -lm -o calc
+rm lex.c yacc.c
+for mws85 start time: Tue Oct 29 04:08:10 2013
+Enter calculator expression and $ to exit
+t1 = 30
+t2 = 200
+t3 = t1 | t2
+a = t3
+t1 = a
+t1 = 30
+t2 = 200
+t3 = t1 & t2
+b = t3
+t1 = b
+t1 = 30
+t2 = 200
+t3 = t1 ^ t2
+c = t3
+t1 = c
+t1 = 30
+t2 = 200
+t3 = t1 % t2
+d = t3
+t1 = d
+t1 = 30
+t1 = - 
+t2 = 200
+t3 = t1 | t2
+e = t3
+t1 = e
+t1 = 30
+t1 = - 
+t2 = 200
+t2 = - 
+t3 = t1 | t2
+f = t3
+t1 = f
+t1 = 30
+t1 = - 
+t2 = 200
+t2 = - 
+t3 = t1 & t2
+g = t3
+t1 = g
+t1 = 30
+t2 = 200
+t2 = - 
+t3 = t1 & t2
+h = t3
+t1 = h
+t1 = a
+t2 = b
+t3 = t1 + t2
+t4 = c
+t5 = t3 + t4
+t6 = d
+t7 = t5 + t6
+t8 = e
+t9 = t7 + t8
+t10 = f
+t11 = t9 + t10
+t12 = g
+t13 = t11 + t12
+t14 = h
+t15 = t13 + t14
+symbol table: 
+index: 1 identifier: a length: 2
+index: 2 constant: 30 length: 3 format: decimal
+index: 3 constant: 200 length: 4 format: decimal
+index: 4 identifier: b length: 2
+index: 5 identifier: c length: 2
+index: 6 identifier: d length: 2
+index: 7 identifier: e length: 2
+index: 8 identifier: f length: 2
+index: 9 identifier: g length: 2
+index: 10 identifier: h length: 2
+for mws85 start time: Tue Oct 29 04:08:10 2013
+Enter calculator expression and $ to exit
+t1 = 3.1415
+t2 = 1.16804
+t3 = t1 | t2
+a = t3
+t1 = a
+t1 = 3.1415
+t2 = 1.16804
+t3 = t1 & t2
+b = t3
+t1 = b
+t1 = 3.1415
+t2 = 1.16804
+t3 = t1 ^ t2
+c = t3
+t1 = c
+t1 = 3.1415
+t2 = 1.16804
+t3 = t1 % t2
+d = t3
+t1 = d
+t1 = 3.1415
+t1 = - 
+t2 = 1.16804
+t3 = t1 | t2
+e = t3
+t1 = e
+t1 = 3.1415
+t1 = - 
+t2 = 1.16804
+t2 = - 
+t3 = t1 | t2
+f = t3
+t1 = f
+t1 = 3.1415
+t1 = - 
+t2 = 1.16804
+t2 = - 
+t3 = t1 & t2
+g = t3
+t1 = g
+t1 = 3.1415
+t2 = 1.16804
+t2 = - 
+t3 = t1 & t2
+h = t3
+t1 = h
+t1 = a
+t2 = b
+t3 = t1 + t2
+t4 = c
+t5 = t3 + t4
+t6 = d
+t7 = t5 + t6
+t8 = e
+t9 = t7 + t8
+t10 = f
+t11 = t9 + t10
+t12 = g
+t13 = t11 + t12
+t14 = h
+t15 = t13 + t14
+symbol table: 
+index: 1 identifier: a length: 2
+index: 2 constant: 3.1415 length: 7 format: float
+index: 3 constant: 1.16804 length: 8 format: float
+index: 4 identifier: b length: 2
+index: 5 identifier: c length: 2
+index: 6 identifier: d length: 2
+index: 7 identifier: e length: 2
+index: 8 identifier: f length: 2
+index: 9 identifier: g length: 2
+index: 10 identifier: h length: 2
