@@ -133,6 +133,7 @@ extern	int	next_label( void);
 extern	QUAD	*new_quad1( int operator, QUAD *q1, QUAD *q2);
 extern	QUAD	*new_quad2( int operator, QUAD *q1);
 extern	QUAD	*new_quad3( int operator, int index, QUAD *q1);
+extern 	QUAD	*new_quad5( int operator, QUAD *q1, QUAD *q2, QUAD *q3);
 /*
  *	extern data from main.c
  */

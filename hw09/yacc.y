@@ -26,10 +26,22 @@
 
 %token CONSTANT
 %token IDENTIFIER
+%token IF
+%token ELSE
+%token LE
+%token GE
+%token EQ
+%token NE
+%token LABEL
+%token GOTO
+%token IFTRUE
+%token IFFALSE
 
 %left '|'
 %left '^'
 %left '&'
+%left EQ NE
+%left '<' '>' GE LE
 %left '+' '-'
 %left '*' '/' '%'
 %right UMINUS '~' /* supplies precedence for unary minus */
@@ -50,11 +62,18 @@ lines	: lines stmts '\n'
 	| lines error '\n' { yyerror(" reenter previous line: "); yyerrok; }
 	| /* empty */
 	;
-stmts	: expr 
-	| ident '=' expr 
+stmts	: IF '(' expr ')' stmts
+	{
+		$$.quad = new_quad5( IFTRUE, $3.quad, $5.quad, 0);
+	}
+	| IF '(' expr ')' stmts ELSE stmts
+	{
+		$$.quad = new_quad5( IFTRUE, $3.quad, $5.quad, $7.quad);
+	}
+	| ident '=' expr ';'
 	{
 		$$.quad = new_quad3( '=', $1.index, $3.quad);
-	}
+	}  
 	;
 expr	: expr '+' expr
 	{ 
@@ -108,6 +127,31 @@ expr	: expr '+' expr
 	| ident
 	{
 		$$.quad = new_quad3( '=', $1.index, 0);
+	}
+/*	add relational operators */
+	| expr LE expr
+	{
+		$$.quad = new_quad1( LE, $1.quad, $3.quad);
+	}
+	| expr GE expr
+	{
+		$$.quad = new_quad1( GE, $1.quad, $3.quad);
+	}
+	| expr EQ expr
+	{
+		$$.quad = new_quad1( EQ, $1.quad, $3.quad);
+	}
+	| expr NE expr
+	{
+		$$.quad = new_quad1( NE, $1.quad, $3.quad);
+	}
+	| expr '<' expr
+	{
+		$$.quad = new_quad1( '<', $1.quad, $3.quad);
+	}
+	| expr '>' expr
+	{
+		$$.quad = new_quad1( '>', $1.quad, $3.quad);
 	}
 	;
 

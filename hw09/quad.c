@@ -128,6 +128,17 @@ void	print_quad_operand( int type, int index)
 }
 
 /*
+*	define the relational operator strings
+*/
+char *relational[] =
+{
+	"<=",
+	">=",
+	"==",
+	"!=",
+};
+
+/*
  *	print a quad structure
  */
 void	print_quad( QUAD *quad)
@@ -142,27 +153,67 @@ void	print_quad( QUAD *quad)
 	case '*':
 	case '/':
 	case '%':
+	case '<':
+	case '>':
+	     printf( "\t");
 	     print_quad_operand( quad->dst_type, quad->dst_index);
 	     printf( " = ");
 	     print_quad_operand( quad->op1_type, quad->op1_index);
 	     printf( " %c ", quad->operator);
 	     print_quad_operand( quad->op2_type, quad->op2_index);
 	     break;
+	case LE:
+	case GE:
+	case EQ:
+	case NE:
+	     printf( "\t");
+	     print_quad_operand( quad->dst_type, quad->dst_index);
+	     printf( "=");
+	     print_quad_operand( quad->op1_type, quad->op1_index);
+	     printf( "%s ", relational[ quad->operator - LE]);
+	     print_quad_operan( quad->op2_type, quad->op2_index);
+	     break; 
 	case UMINUS:
+	     printf( "\t");
 	     print_quad_operand( quad->dst_type, quad->dst_index);
 	     printf( " = - ");
 	     print_quad_operand( quad->op1_type, quad->op1_index);
 	     break;
 	case '~' :
+	     printf( "\t");
 	     print_quad_operand( quad->dst_type, quad->dst_index);
 	     printf( " = ~ ");
 	     print_quad_operand( quad->op1_type, quad->op1_index);
 	     break;
 	case '=':
+	     printf( "\t");
 	     print_quad_operand( quad->dst_type, quad->dst_index);
 	     printf( " = ");
 	     print_quad_operand( quad->op1_type, quad->op1_index);
 	     break;
+	case IFTRUE:
+		printf( "\t");
+		printf( "IFTRUE");
+		print_quad_operand( quad->dst_type, quad->dst_index);
+		printf( "GOTO" );
+		print_quad_operan( quad->op1_type, quad->op1_index);
+		break;
+	case IFFALSE:
+		printf( "\t");
+		printf( "IFFALSE ");
+		print_quad_operand( quad->dst_type,
+		printf( " GOTO ");
+		print_quad_operand( quad->op1_type,
+		break;
+	case LABEL:
+		print_quad_operand( quad->dst_type,
+		printf( ": ");
+		break;
+	case GOTO:
+		printf( "\t");
+		printf( "GOTO ");
+		print_quad_operand( quad->dst_type,
+		break;
 	}
 	printf( "\n");
 	//	printf( "\nnext: %08.8x\n", (int)quad->next);
@@ -244,5 +295,29 @@ QUAD	*new_quad3( int operator, int index, QUAD *q1)
 	}
 	quad1 = end_quad_list( q1);
 	quad1->next = new_quad( operator, data.st[ index].type, index, quad1->dst_type, quad1->dst_index, 0, 0);
+	return q1;
+}
+
+QUAD *new_quad5( int operator, QUAD *q1, QUAD *q2, QUAD *q3)
+{
+	QUAD *quad1;
+	QUAD *quad2;
+	QUAD *quad3;
+
+	quad1 = end_quad_list( q1);
+	quad1->next = q2;
+	quad2 = end_quad_list( q2);
+
+	if ( !q3)
+	{
+		quad2->next = q3;
+		quad3 = end_quad_list( q3);
+		quad3->next = new_quad( operator, TYPE_TEMPORARY, next_temp(), quad1->dst_type, quad1->dst_index, quad2->dst_type, quad2->dst_index);	
+	}
+
+	else
+	{
+		quad2->next = new_quad(operator, TYPE_TEMPORARY, next_temp(), quad1->dst_type, quad1->dst_index, 0, 0);
+	}
 	return q1;
 }

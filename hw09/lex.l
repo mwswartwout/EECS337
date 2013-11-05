@@ -57,6 +57,8 @@ int	install( int type, char *buffer, unsigned int length, int format)
 %%
 
 "$"			{ return( EOF); }
+"if"			{ return IF; }
+"else"			{ return ELSE; }
 [\n]			{ return( '\n'); /* return cr */ }
 
 {L}({L}|{D})*		{ yylval.index = install( TYPE_IDENTIFIER, yytext, yyleng + 1, FORMAT_NONE); return( IDENTIFIER); }
@@ -67,6 +69,10 @@ int	install( int type, char *buffer, unsigned int length, int format)
 {D}+{E}{FS}?		{ yylval.index = install( TYPE_CONSTANT, yytext, yyleng + 1, FORMAT_FLOAT); return( CONSTANT); }
 {D}*"."{D}+({E})?{FS}?	{ yylval.index = install( TYPE_CONSTANT, yytext, yyleng + 1, FORMAT_FLOAT); return( CONSTANT); }
 {D}+"."{D}*({E})?{FS}?	{ yylval.index = install( TYPE_CONSTANT, yytext, yyleng + 1, FORMAT_FLOAT); return( CONSTANT); }
+"<="			{ return( LE); }
+">="			{ return( GE); }
+"=="			{ return( EQ); }
+"!="			{ return( NE); }
 [ \t]			{ /* ignore white characters */ }
 .			{ return( yytext[ 0]); /* return everything else */ }
 
