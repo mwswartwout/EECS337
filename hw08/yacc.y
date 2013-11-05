@@ -1,15 +1,18 @@
 /*******************************************************************************
 *
-* FILE:		yacc.y 
+* FILE:		yacc.y (second.y)
 *
 * DESC:		EECS 337 Assignment 6
 *      		yacc program for the Calculator page 295-296
 *
-* AUTHOR:	mws85
+* AUTHOR:	caseid
 *
 * DATE:		October 8, 2013
 *
 * EDIT HISTORY:	
+*
+*		Updated for EECS 337 Assignment 7 October 15, 2013 
+*		Updated for EECS 337 Assignment 8 October 29, 2013 
 *
 *******************************************************************************/
 %{
@@ -32,47 +35,49 @@
 %right UMINUS '~' /* supplies precedence for unary minus */
 
 %% 	/* beginning of rules section */
-lines	: lines stmts '\n'
+
+lines	: lines stmts '\n' 
 	{
+/*
+ *	print the quad list
+ */
 		print_quad_list( $2.quad);
+/*
+ *	free the quad list
+ */
 		free_quad_list( $2.quad);
-	} 
+	}
 	| lines error '\n' { yyerror(" reenter previous line: "); yyerrok; }
-	| 
+	| /* empty */
 	;
-stmts 	: expr
-	| ident '=' expr
+stmts	: expr 
+	| ident '=' expr 
 	{
 		$$.quad = new_quad3( '=', $1.index, $3.quad);
 	}
 	;
-expr	: expr '+' expr	
-	{
-		$$.quad = new_quad1( '+', $1.quad, $3.quad);	
+expr	: expr '+' expr
+	{ 
+		$$.quad = new_quad1( '+', $1.quad, $3.quad);
 	}
-	| expr '-' expr
-	{
+	| expr '-' expr	
+	{ 
 		$$.quad = new_quad1( '-', $1.quad, $3.quad);
-	}	
+	}
 	| expr '*' expr	
-	{
+	{ 
 		$$.quad = new_quad1( '*', $1.quad, $3.quad);
 	}
 	| expr '/' expr	
-	{
+	{ 
 		$$.quad = new_quad1( '/', $1.quad, $3.quad);
 	}
-	
-	| '(' expr ')'
-	{
-		$$.quad = $2.quad;	 
-	}
-
-	| expr '|' expr
+/* 	add bitwise operators */
+	| expr '|' expr	
 	{
 		$$.quad = new_quad1( '|', $1.quad, $3.quad);
 	}
-	| expr '^' expr
+	| expr '^' expr	
 	{
 		$$.quad = new_quad1( '^', $1.quad, $3.quad);
 	}
@@ -80,19 +85,26 @@ expr	: expr '+' expr
 	{
 		$$.quad = new_quad1( '&', $1.quad, $3.quad);
 	}
-	| expr '%' expr
+	| expr '%' expr	
 	{
 		$$.quad = new_quad1( '%', $1.quad, $3.quad);
 	}
-	| '~' expr %prec UMINUS
+	| '(' expr ')'	
+	{
+		$$ = $2;
+	}
+	| '~' expr 
+	{
+		$$.quad = new_quad2( '~', $2.quad);
+	}
+	| '-' expr %prec UMINUS 
 	{
 		$$.quad = new_quad2( UMINUS, $2.quad);
 	}
-	| number 
+	| number
 	{
 		$$.quad = new_quad3( '=', $1.index, 0);
 	}
-
 	| ident
 	{
 		$$.quad = new_quad3( '=', $1.index, 0);
@@ -104,6 +116,7 @@ number	: CONSTANT
 
 ident	: IDENTIFIER
 	;
+
 %%
 
 void	yyerror( char *s)
