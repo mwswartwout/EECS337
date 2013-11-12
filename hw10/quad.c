@@ -4,7 +4,7 @@
 *
 * DESC:		EECS 337 Assignment 8
 *
-* AUTHOR:	caseid
+* AUTHOR:	mws85
 *
 * DATE:		October 29, 2013
 *
@@ -216,6 +216,15 @@ void	print_quad( QUAD *quad)
 	     printf( "GOTO ");
 	     print_quad_operand( quad->dst_type, quad->dst_index);
 	     break;
+	case ']':
+		printf( "\t");
+		print_quad_operand( quad->dst_type, quad->dst_index);
+		printf( " = ");
+		print_quad_operand( quad->op1_type, quad->op1_index);
+		printf( " [ ");
+		print_quad_operand( quad->op2_type, quad->op2_index);
+		printf( " ] ");
+		break;
 	}
 	printf( "\n");
 	//	printf( "\nnext: %08.8x\n", (int)quad->next);
@@ -337,5 +346,14 @@ QUAD	*new_quad5( int operator, QUAD *q1, QUAD *q2, QUAD *q3)
 		quad3 = end_quad_list( q3);
 		quad3->next = new_quad( LABEL, TYPE_LABEL, label2, 0, 0, 0, 0);
 	}
+	return q1;
+}
+
+/*
+*	allocate a quad8 function
+		$$.quad = new_quad8( ']', $1.index, $3.quad, 0);
+*/
+QUAD	*new_quad8( int operator, int index, QUAD *q1, QUAD *q2)
+{
 	return q1;
 }
