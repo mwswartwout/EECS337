@@ -13,6 +13,7 @@
 *
 *		Updated for EECS 337 Assignment 7 October 15, 2013 
 *		Updated for EECS 337 Assignment 8 October 29, 2013 
+*		Updated for EECS 337 Assignment 9 November 5, 2013 
 *
 ******************************************************************************/
 #ifndef	YYSTYPE_H
@@ -133,7 +134,7 @@ extern	int	next_label( void);
 extern	QUAD	*new_quad1( int operator, QUAD *q1, QUAD *q2);
 extern	QUAD	*new_quad2( int operator, QUAD *q1);
 extern	QUAD	*new_quad3( int operator, int index, QUAD *q1);
-extern 	QUAD	*new_quad5( int operator, QUAD *q1, QUAD *q2, QUAD *q3);
+extern	QUAD	*new_quad5( int operator, QUAD *q1, QUAD *q2, QUAD *q3);
 /*
  *	extern data from main.c
  */

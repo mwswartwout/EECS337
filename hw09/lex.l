@@ -14,6 +14,7 @@
 *
 *		Updated for EECS 337 Assignment 7 October 15, 2013 
 *		Updated for EECS 337 Assignment 8 October 29, 2013 
+*		Updated for EECS 337 Assignment 9 November 5, 2013 
 *
 *******************************************************************************/
 D			[0-9]

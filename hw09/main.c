@@ -139,7 +139,7 @@ int	main( int argc, char *argv[])
  *	print start of test time
  */
 	time( &t);
-	fprintf( stdout, "for mws85 start time: %s", ctime( &t));
+	fprintf( stdout, "for caseid start time: %s", ctime( &t));
 /*
  *	initialize or constructor, init
  */

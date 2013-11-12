@@ -13,6 +13,7 @@
 *
 *		Updated for EECS 337 Assignment 7 October 15, 2013 
 *		Updated for EECS 337 Assignment 8 October 29, 2013 
+*		Updated for EECS 337 Assignment 9 November 5, 2013 
 *
 *******************************************************************************/
 %{
@@ -32,6 +33,7 @@
 %token GE
 %token EQ
 %token NE
+/* quads operators */
 %token LABEL
 %token GOTO
 %token IFTRUE
@@ -73,7 +75,7 @@ stmts	: IF '(' expr ')' stmts
 	| ident '=' expr ';'
 	{
 		$$.quad = new_quad3( '=', $1.index, $3.quad);
-	}  
+	}
 	;
 expr	: expr '+' expr
 	{ 
@@ -108,6 +110,31 @@ expr	: expr '+' expr
 	{
 		$$.quad = new_quad1( '%', $1.quad, $3.quad);
 	}
+/* 	add relational operators */
+	| expr LE expr	
+	{
+		$$.quad = new_quad1( LE, $1.quad, $3.quad);
+	}
+	| expr GE expr	
+	{
+		$$.quad = new_quad1( GE, $1.quad, $3.quad);
+	}
+	| expr EQ expr	
+	{
+		$$.quad = new_quad1( EQ, $1.quad, $3.quad);
+	}
+	| expr NE expr	
+	{
+		$$.quad = new_quad1( NE, $1.quad, $3.quad);
+	}
+	| expr '<' expr	
+	{
+		$$.quad = new_quad1( '<', $1.quad, $3.quad);
+	}
+	| expr '>' expr	
+	{
+		$$.quad = new_quad1( '>', $1.quad, $3.quad);
+	}
 	| '(' expr ')'	
 	{
 		$$ = $2;
@@ -127,31 +154,6 @@ expr	: expr '+' expr
 	| ident
 	{
 		$$.quad = new_quad3( '=', $1.index, 0);
-	}
-/*	add relational operators */
-	| expr LE expr
-	{
-		$$.quad = new_quad1( LE, $1.quad, $3.quad);
-	}
-	| expr GE expr
-	{
-		$$.quad = new_quad1( GE, $1.quad, $3.quad);
-	}
-	| expr EQ expr
-	{
-		$$.quad = new_quad1( EQ, $1.quad, $3.quad);
-	}
-	| expr NE expr
-	{
-		$$.quad = new_quad1( NE, $1.quad, $3.quad);
-	}
-	| expr '<' expr
-	{
-		$$.quad = new_quad1( '<', $1.quad, $3.quad);
-	}
-	| expr '>' expr
-	{
-		$$.quad = new_quad1( '>', $1.quad, $3.quad);
 	}
 	;
 

@@ -10,6 +10,8 @@
 *
 * EDIT HISTORY:	
 *
+*		Updated for EECS 337 Assignment 9 November 5, 2013 
+*
 *******************************************************************************/
 #include	<stdio.h>
 #include	<stdlib.h>
@@ -128,9 +130,9 @@ void	print_quad_operand( int type, int index)
 }
 
 /*
-*	define the relational operator strings
-*/
-char *relational[] =
+ *	define the relational operator strings
+ */
+char	*relational[] =
 {
 	"<=",
 	">=",
@@ -168,11 +170,11 @@ void	print_quad( QUAD *quad)
 	case NE:
 	     printf( "\t");
 	     print_quad_operand( quad->dst_type, quad->dst_index);
-	     printf( "=");
+	     printf( " = ");
 	     print_quad_operand( quad->op1_type, quad->op1_index);
-	     printf( "%s ", relational[ quad->operator - LE]);
+	     printf( " %s ", relational[ quad->operator - LE]);
 	     print_quad_operand( quad->op2_type, quad->op2_index);
-	     break; 
+	     break;
 	case UMINUS:
 	     printf( "\t");
 	     print_quad_operand( quad->dst_type, quad->dst_index);
@@ -192,28 +194,28 @@ void	print_quad( QUAD *quad)
 	     print_quad_operand( quad->op1_type, quad->op1_index);
 	     break;
 	case IFTRUE:
-		printf( "\t");
-		printf( "IFTRUE");
-		print_quad_operand( quad->dst_type, quad->dst_index);
-		printf( "GOTO" );
-		print_quad_operand( quad->op1_type, quad->op1_index);
-		break;
+	     printf( "\t");
+	     printf( "IFTRUE ");
+	     print_quad_operand( quad->dst_type, quad->dst_index);
+	     printf( " GOTO ");
+	     print_quad_operand( quad->op1_type, quad->op1_index);
+	     break;
 	case IFFALSE:
-		printf( "\t");
-		printf( "IFFALSE ");
-		print_quad_operand( quad->dst_type, quad->dst_index);
-		printf( " GOTO ");
-		print_quad_operand( quad->op1_type, quad->op1_index);
-		break;
+	     printf( "\t");
+	     printf( "IFFALSE ");
+	     print_quad_operand( quad->dst_type, quad->dst_index);
+	     printf( " GOTO ");
+	     print_quad_operand( quad->op1_type, quad->op1_index);
+	     break;
 	case LABEL:
-		print_quad_operand( quad->dst_type, quad->dst_index);
-		printf( ": ");
-		break;
+	     print_quad_operand( quad->dst_type, quad->dst_index);
+	     printf( ": ");
+	     break;
 	case GOTO:
-		printf( "\t");
-		printf( "GOTO ");
-		print_quad_operand( quad->dst_type, quad->dst_index);
-		break;
+	     printf( "\t");
+	     printf( "GOTO ");
+	     print_quad_operand( quad->dst_type, quad->dst_index);
+	     break;
 	}
 	printf( "\n");
 	//	printf( "\nnext: %08.8x\n", (int)quad->next);
@@ -282,6 +284,7 @@ QUAD	*new_quad2( int operator, QUAD *q1)
 }
 /*
  *	allocate a quad3 function
+		$$.quad = new_quad3( '=', $1.index, 0);
 		$$.quad = new_quad3( '=', $1.index, $3.quad);
  */
 QUAD	*new_quad3( int operator, int index, QUAD *q1)
@@ -298,26 +301,41 @@ QUAD	*new_quad3( int operator, int index, QUAD *q1)
 	return q1;
 }
 
-QUAD *new_quad5( int operator, QUAD *q1, QUAD *q2, QUAD *q3)
+/*
+ *	allocate a quad5 function
+		$$.quad = new_quad5( IFTRUE, $3.quad, $5.quad, 0);
+		$$.quad = new_quad5( IFTRUE, $3.quad, $5.quad, $7.quad);
+ */
+QUAD	*new_quad5( int operator, QUAD *q1, QUAD *q2, QUAD *q3)
 {
-	QUAD *quad1;
-	QUAD *quad2;
-	QUAD *quad3;
+	QUAD	*quad1;
+	QUAD	*quad2;
+	QUAD	*quad3;
+	int	label1;
+	int	label2;
 
-	quad1 = end_quad_list( q1);
-	quad1->next = q2;
-	quad2 = end_quad_list( q2);
-
-	if ( !q3)
+	if( ! q3)
 	{
-		quad2->next = q3;
-		quad3 = end_quad_list( q3);
-		quad3->next = new_quad( operator, TYPE_TEMPORARY, next_temp(), quad1->dst_type, quad1->dst_index, quad2->dst_type, quad2->dst_index);	
+		quad1 = end_quad_list( q1);
+		label1 = next_label();
+		quad1->next = new_quad( operator, quad1->dst_type, quad1->dst_index, TYPE_LABEL, label1, 0, 0);
+		quad1->next->next = q2;
+		quad2 = end_quad_list( q2);
+		quad2->next = new_quad( LABEL, TYPE_LABEL, label1, 0, 0, 0, 0);
 	}
-
 	else
 	{
-		quad2->next = new_quad(operator, TYPE_TEMPORARY, next_temp(), quad1->dst_type, quad1->dst_index, 0, 0);
+		quad1 = end_quad_list( q1);
+		label1 = next_label();
+		label2 = next_label();
+		quad1->next = new_quad( operator, quad1->dst_type, quad1->dst_index, TYPE_LABEL, label1, 0, 0);
+		quad1->next->next = q2;
+		quad2 = end_quad_list( q2);
+		quad2->next = new_quad( GOTO, TYPE_LABEL, label2, 0, 0, 0, 0);
+		quad2->next->next = new_quad( LABEL, TYPE_LABEL, label1, 0, 0, 0, 0);
+		quad2->next->next->next = q3;
+		quad3 = end_quad_list( q3);
+		quad3->next = new_quad( LABEL, TYPE_LABEL, label2, 0, 0, 0, 0);
 	}
 	return q1;
 }
