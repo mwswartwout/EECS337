@@ -5,7 +5,7 @@
 * DESC:		EECS 337 Assignment 6
 *      		include file for the Calculator page 295-296
 *
-* AUTHOR:	caseid
+* AUTHOR:	mws85
 *
 * DATE:		October 8, 2013
 *
@@ -44,6 +44,13 @@ SYMBOL_TABLE
 #define	FORMAT_OCTAL		3
 #define	FORMAT_FLOAT		4	// defined but not used
 	int	format;
+#define SPECIFIER_CHAR		1
+#define	SPECIFIER_SHORT		2
+#define SPECIFIER_INT		4
+#define SPECIFIER_LONG		8
+	int	specifier;
+	int 	sizeofspecifier;
+	int	sizeofarray;
 };
 /*
  *	define a QUAD data structure that supports:
@@ -110,6 +117,7 @@ DATA
 	int	memory;
 	int	temp;
 	int	label;
+	int	errors;
 /*
  *	define the symbol table 
  */
@@ -135,6 +143,8 @@ extern	QUAD	*new_quad1( int operator, QUAD *q1, QUAD *q2);
 extern	QUAD	*new_quad2( int operator, QUAD *q1);
 extern	QUAD	*new_quad3( int operator, int index, QUAD *q1);
 extern	QUAD	*new_quad5( int operator, QUAD *q1, QUAD *q2, QUAD *q3);
+extern 	QUAD	*new_quad8( int operator, int index, QUAD *q1, QUAD *q2);
+extern 	int 	new_symbol( int specifier, int identifier, int constant);
 /*
  *	extern data from main.c
  */
