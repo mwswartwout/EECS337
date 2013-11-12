@@ -62,7 +62,7 @@ int	install( int type, char *buffer, unsigned int length, int format)
 "else"			{ return ELSE; }
 "char"			{ yylval.index = CHAR; return CHAR; }
 "short"			{ yylval.index = SHORT; return SHORT; }
-"int"			{ yylval.index = INT: return INT; }
+"int"			{ yylval.index = INT; return INT; }
 "long"			{ yylval.index = LONG; return LONG; }
 [\n]			{ return( '\n'); /* return cr */ }
 
