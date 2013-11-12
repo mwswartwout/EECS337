@@ -5,7 +5,7 @@
 * DESC:		EECS 337 Assignment 6
 *      		Scanner program for the Calculator page 296-296
 *
-* AUTHOR:	caseid
+* AUTHOR:	mws85
 *
 * DATE:		October 8, 2013
 *
@@ -60,6 +60,10 @@ int	install( int type, char *buffer, unsigned int length, int format)
 "$"			{ return( EOF); }
 "if"			{ return IF; }
 "else"			{ return ELSE; }
+"char"			{ yylval.index = CHAR; return CHAR; }
+"short"			{ yylval.index = SHORT; return SHORT; }
+"int"			{ yylval.index = INT: return INT; }
+"long"			{ yylval.index = LONG; return LONG; }
 [\n]			{ return( '\n'); /* return cr */ }
 
 {L}({L}|{D})*		{ yylval.index = install( TYPE_IDENTIFIER, yytext, yyleng + 1, FORMAT_NONE); return( IDENTIFIER); }
