@@ -5,7 +5,7 @@
 * DESC:		EECS 337 Assignment 6
 *      		main program for the Calculator page 295-296
 *
-* AUTHOR:	caseid
+* AUTHOR:	mws85
 *
 * DATE:		October 8, 2013
 *
@@ -54,7 +54,12 @@ int	main_exit( void)
  */
 	if( data.memory)
 		fprintf( stderr, "Error: memory leak: %d\n", data.memory);
-	return 0;
+/*	
+*	check for compiler errors
+*/
+	if( data.errors)
+		fprintf(stderr, "Errors: %d\n", data.errors);
+	return data.errors;	
 }
 
 /*
