@@ -1,0 +1,12 @@
+char c1;
+char c32[ 32];
+short s2;
+short s16[ 16];
+int i4;
+int i8[ 8];
+long l8;
+long l4[ 4];
+c1 = c32[ 10];
+s2 = s16[ s2 + 2];
+i4 = i8[ i4 - 4];
+l8 = l4[ l8 + 4];

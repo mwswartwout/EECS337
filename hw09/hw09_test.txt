@@ -1,0 +1,13 @@
+rm -f lex.c yacc.c y.tab.h y.output *.o
+yacc -dv yacc.y 
+conflicts: 1 shift/reduce
+mv -f y.tab.c yacc.c
+gcc -g   -c -o yacc.o yacc.c
+lex  -t lex.l > lex.c
+gcc -g   -c -o lex.o lex.c
+gcc -g   -c -o main.o main.c
+gcc -g   -c -o quad.o quad.c
+gcc -g yacc.o lex.o main.o quad.o -lm -o calc
+rm lex.c yacc.c
+./hw09_test.sh: line 6: 21588 Segmentation fault      (core dumped) ./calc +symbol < math21.txt
+./hw09_test.sh: line 7: 21590 Segmentation fault      (core dumped) ./calc +symbol < math22.txt

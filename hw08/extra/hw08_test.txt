@@ -1,0 +1,223 @@
+rm -f lex.c yacc.c y.tab.h y.output *.o
+yacc -dv yacc.y 
+mv -f y.tab.c yacc.c
+gcc -g   -c -o yacc.o yacc.c
+lex  -t lex.l > lex.c
+gcc -g   -c -o lex.o lex.c
+gcc -g   -c -o main.o main.c
+gcc -g   -c -o quad.o quad.c
+gcc -g yacc.o lex.o main.o quad.o -lm -o calc
+rm lex.c yacc.c
+for caseid start time: Wed Oct 16 14:36:17 2013
+Enter calculator expression and $ to exit
+t1 = 30
+t2 = 200
+t3 = t1 | t2
+a = t3
+t1 = a
+t1 = 30
+t2 = 200
+t3 = t1 & t2
+b = t3
+t1 = b
+t1 = 30
+t2 = 200
+t3 = t1 ^ t2
+c = t3
+t1 = c
+t1 = 30
+t2 = 200
+t3 = t1 % t2
+d = t3
+t1 = d
+t1 = 30
+t2 = ~ t1
+t3 = 200
+t4 = t2 | t3
+e = t4
+t1 = e
+t1 = 30
+t2 = ~ t1
+t3 = 200
+t4 = ~ t3
+t5 = t2 | t4
+f = t5
+t1 = f
+t1 = 30
+t2 = ~ t1
+t3 = 200
+t4 = ~ t3
+t5 = t2 & t4
+g = t5
+t1 = g
+t1 = 30
+t2 = 200
+t3 = ~ t2
+t4 = t1 & t3
+h = t4
+t1 = h
+t1 = a
+t2 = b
+t3 = t1 + t2
+t4 = c
+t5 = t3 + t4
+t6 = d
+t7 = t5 + t6
+t8 = e
+t9 = t7 + t8
+t10 = f
+t11 = t9 + t10
+t12 = g
+t13 = t11 + t12
+t14 = h
+t15 = t13 + t14
+symbol table: 
+index: 1 identifier: a length: 2
+index: 2 constant: 30 length: 3 format: decimal
+index: 3 constant: 200 length: 4 format: decimal
+index: 4 identifier: b length: 2
+index: 5 identifier: c length: 2
+index: 6 identifier: d length: 2
+index: 7 identifier: e length: 2
+index: 8 identifier: f length: 2
+index: 9 identifier: g length: 2
+index: 10 identifier: h length: 2
+for caseid start time: Wed Oct 16 14:36:17 2013
+Enter calculator expression and $ to exit
+t1 = 3.1415
+t2 = 1.16804
+t3 = t1 | t2
+a = t3
+t1 = a
+t1 = 3.1415
+t2 = 1.16804
+t3 = t1 & t2
+b = t3
+t1 = b
+t1 = 3.1415
+t2 = 1.16804
+t3 = t1 ^ t2
+c = t3
+t1 = c
+t1 = 3.1415
+t2 = 1.16804
+t3 = t1 % t2
+d = t3
+t1 = d
+t1 = 3.1415
+t2 = ~ t1
+t3 = 1.16804
+t4 = t2 | t3
+e = t4
+t1 = e
+t1 = 3.1415
+t2 = ~ t1
+t3 = 1.16804
+t4 = ~ t3
+t5 = t2 | t4
+f = t5
+t1 = f
+t1 = 3.1415
+t2 = ~ t1
+t3 = 1.16804
+t4 = ~ t3
+t5 = t2 & t4
+g = t5
+t1 = g
+t1 = 3.1415
+t2 = 1.16804
+t3 = ~ t2
+t4 = t1 & t3
+h = t4
+t1 = h
+t1 = a
+t2 = b
+t3 = t1 + t2
+t4 = c
+t5 = t3 + t4
+t6 = d
+t7 = t5 + t6
+t8 = e
+t9 = t7 + t8
+t10 = f
+t11 = t9 + t10
+t12 = g
+t13 = t11 + t12
+t14 = h
+t15 = t13 + t14
+symbol table: 
+index: 1 identifier: a length: 2
+index: 2 constant: 3.1415 length: 7 format: float
+index: 3 constant: 1.16804 length: 8 format: float
+index: 4 identifier: b length: 2
+index: 5 identifier: c length: 2
+index: 6 identifier: d length: 2
+index: 7 identifier: e length: 2
+index: 8 identifier: f length: 2
+index: 9 identifier: g length: 2
+index: 10 identifier: h length: 2
+for caseid start time: Wed Oct 16 14:36:17 2013
+Enter calculator expression and $ to exit
+t1 = 3
+t2 = 2
+t3 = + t2
+t4 = t1 + t3
+a = t4
+t1 = 3
+t2 = - t1
+t3 = 2
+t4 = + t3
+t5 = t2 * t4
+b = t5
+t1 = a3
+t2 = b2
+t3 = + t2
+t4 = t1 / t3
+c = t4
+t1 = a3
+t2 = ~ t1
+t3 = b2
+t4 = + t3
+t5 = t2 - t4
+d = t5
+t1 = 3
+t2 = 2
+t3 = ~ t2
+t4 = t1 + t3
+t5 = a3
+t6 = b2
+t7 = t5 * t6
+t8 = t4 * t7
+t9 = 3
+t10 = 2
+t11 = + t10
+t12 = t9 - t11
+t13 = t8 / t12
+t14 = 3
+t15 = 2
+t16 = + t15
+t17 = t14 - t16
+t18 = t13 % t17
+e = t18
+t1 = a
+t2 = b
+t3 = c
+t4 = t2 * t3
+t5 = d
+t6 = t4 / t5
+t7 = t1 + t6
+t8 = e
+t9 = + t8
+t10 = t7 + t9
+f = t10
+symbol table: 
+index: 1 identifier: a length: 2
+index: 2 constant: 3 length: 2 format: decimal
+index: 3 constant: 2 length: 2 format: decimal
+index: 4 identifier: b length: 2
+index: 5 identifier: c length: 2
+index: 6 identifier: a3 length: 3
+index: 7 identifier: b2 length: 3
+index: 8 identifier: d length: 2
+index: 9 identifier: e length: 2
+index: 10 identifier: f length: 2
