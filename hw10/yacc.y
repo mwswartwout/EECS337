@@ -27,6 +27,10 @@
 
 %token CONSTANT
 %token IDENTIFIER
+%token CHAR
+%token SHORT
+%token INT
+%token LONG
 %token IF
 %token ELSE
 %token LE
@@ -61,8 +65,23 @@ lines	: lines stmts '\n'
  */
 		free_quad_list( $2.quad);
 	}
+	| lines decls '\n'
 	| lines error '\n' { yyerror(" reenter previous line: "); yyerrok; }
 	| /* empty */
+	;
+decls   : type ident ';'
+	{
+		new_symbol( $1.index, $2.index, 0);
+	}
+	| type ident '[' number ']' ';'
+	{
+		new_symbol( $1.index, $2.index, $4.index);
+	}
+	;
+type	: CHAR
+	| SHORT
+	| INT
+	| LONG
 	;
 stmts	: IF '(' expr ')' stmts
 	{
@@ -155,8 +174,11 @@ expr	: expr '+' expr
 	{
 		$$.quad = new_quad3( '=', $1.index, 0);
 	}
+	| ident '[' expr ']'
+	{
+		$$.quad = new_quad8( ']', $1.index, $3.quad, 0);
+	}
 	;
-
 number	: CONSTANT
 	;
 
