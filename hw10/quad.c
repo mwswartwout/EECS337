@@ -359,14 +359,14 @@ QUAD	*new_quad8( int operator, int index, QUAD *q1, QUAD *q2)
 	QUAD *quad2;
 	QUAD *quad3 = end_quad_list( q1);
 	char size[ 2];
-	int index;
+	int index2;
 
 	if ( q2 == 0)
 	{
 		size[0] = (char)data.st[ index].specifier+48;
 		size[1] = 0;
-		index = install( TYPE_CONSTANT, size, 2, FORMAT_DECIMAL);
-		quad2 = new_quad( '*', TYPE_TEMPORARY, next_temp(), quad3->dst_type, quad3->dst_index, TYPE_CONSTANT, index);
+		index2 = install( TYPE_CONSTANT, size, 2, FORMAT_DECIMAL);
+		quad2 = new_quad( '*', TYPE_TEMPORARY, next_temp(), quad3->dst_type, quad3->dst_index, TYPE_CONSTANT, index2);
 		quad1 = new_quad( operator, TYPE_TEMPORARY, next_temp(), data.st[ index].type, index, quad2->dst_type, quad2->dst_index);
 	}
 	
