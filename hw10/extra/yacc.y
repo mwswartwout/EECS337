@@ -96,6 +96,10 @@ stmts	: IF '(' expr ')' stmts
 	{
 		$$.quad = new_quad3( '=', $1.index, $3.quad);
 	}
+	| ident '[' expr ']' '=' expr ';'
+	{
+		$$.quad = new_quad8( '[', $1.index, $3.quad, $6.quad);
+	}
 	;
 expr	: expr '+' expr
 	{ 

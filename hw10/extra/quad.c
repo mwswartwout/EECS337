@@ -217,6 +217,14 @@ void	print_quad( QUAD *quad)
 	     printf( "GOTO ");
 	     print_quad_operand( quad->dst_type, quad->dst_index);
 	     break;
+	case '[':
+	     printf( "\t");
+	     print_quad_operand( quad->dst_type, quad->dst_index);
+	     printf( " [ ");
+	     print_quad_operand( quad->op1_type, quad->op1_index);
+	     printf( " ] = ");
+	     print_quad_operand( quad->op2_type, quad->op2_index);
+	     break;
 	case ']':
 	     printf( "\t");
 	     print_quad_operand( quad->dst_type, quad->dst_index);
@@ -353,18 +361,39 @@ QUAD	*new_quad5( int operator, QUAD *q1, QUAD *q2, QUAD *q3)
 /*
  *	allocate a quad8 function
 		$$.quad = new_quad8( ']', $1.index, $3.quad, 0);
+		$$.quad = new_quad8( '[', $1.index, $3.quad, $6.quad);
  */
 QUAD	*new_quad8( int operator, int index, QUAD *q1, QUAD *q2)
 {
 	QUAD	*quad1;
+	QUAD	*quad2;
 
-	quad1 = end_quad_list( q1);
-	if( data.st[ index].specifier == SPECIFIER_CHAR)
-		quad1->next = new_quad( operator, TYPE_TEMPORARY, next_temp(), data.st[ index].type, index, quad1->dst_type, quad1->dst_index);
+	if( ! q2)
+	{
+		quad1 = end_quad_list( q1);
+		if( data.st[ index].specifier == SPECIFIER_CHAR)
+			quad1->next = new_quad( operator, TYPE_TEMPORARY, next_temp(), data.st[ index].type, index, quad1->dst_type, quad1->dst_index);
+		else
+		{
+			quad1->next = new_quad( '*', TYPE_TEMPORARY, next_temp(), quad1->dst_type, quad1->dst_index, TYPE_CONSTANT, data.st[ index].sizeofspecifier );
+			quad1->next->next = new_quad( operator, TYPE_TEMPORARY, next_temp(), data.st[ index].type, index, quad1->next->dst_type, quad1->next->dst_index);
+		}
+	}
 	else
 	{
-		quad1->next = new_quad( '*', TYPE_TEMPORARY, next_temp(), quad1->dst_type, quad1->dst_index, TYPE_CONSTANT, data.st[ index].sizeofspecifier );
-		quad1->next->next = new_quad( operator, TYPE_TEMPORARY, next_temp(), data.st[ index].type, index, quad1->next->dst_type, quad1->next->dst_index);
+		quad1 = end_quad_list( q1);
+		quad2 = end_quad_list( q2);
+		if( data.st[ index].specifier == SPECIFIER_CHAR)
+		{
+			quad1->next = q2;
+			quad2->next = new_quad( operator, data.st[ index].type, index, quad1->dst_type, quad1->dst_index, quad2->dst_type, quad2->dst_index);
+		}
+		else
+		{
+			quad1->next = new_quad( '*', TYPE_TEMPORARY, next_temp(), quad1->dst_type, quad1->dst_index, TYPE_CONSTANT, data.st[ index].sizeofspecifier );
+			quad1->next->next = q2;
+			quad2->next = new_quad( operator, data.st[ index].type, index, quad1->next->dst_type, quad1->next->dst_index, quad2->dst_type, quad2->dst_index);
+		}
 	}
 	return q1;
 }

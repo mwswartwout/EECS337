@@ -1,0 +1,14 @@
+Makefile
+calc
+hw09_caseid.tar
+hw09_test.sh
+hw09_test.txt
+lex.l
+main.c
+math21.txt
+math22.txt
+math23.txt
+quad.c
+symbol_table.c
+yacc.y
+yystype.h

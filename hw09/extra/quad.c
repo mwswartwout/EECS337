@@ -11,7 +11,6 @@
 * EDIT HISTORY:	
 *
 *		Updated for EECS 337 Assignment 9 November 5, 2013 
-*		Updated for EECS 337 Assignment 10 November 12, 2013 
 *
 *******************************************************************************/
 #include	<stdio.h>
@@ -183,9 +182,10 @@ void	print_quad( QUAD *quad)
 	     print_quad_operand( quad->op1_type, quad->op1_index);
 	     break;
 	case '~' :
+	case '!' :
 	     printf( "\t");
 	     print_quad_operand( quad->dst_type, quad->dst_index);
-	     printf( " = ~ ");
+	     printf( " = %c ", quad->operator);
 	     print_quad_operand( quad->op1_type, quad->op1_index);
 	     break;
 	case '=':
@@ -216,15 +216,6 @@ void	print_quad( QUAD *quad)
 	     printf( "\t");
 	     printf( "GOTO ");
 	     print_quad_operand( quad->dst_type, quad->dst_index);
-	     break;
-	case ']':
-	     printf( "\t");
-	     print_quad_operand( quad->dst_type, quad->dst_index);
-	     printf( " = ");
-	     print_quad_operand( quad->op1_type, quad->op1_index);
-	     printf( " [ ");
-	     print_quad_operand( quad->op2_type, quad->op2_index);
-	     printf( " ] ");
 	     break;
 	}
 	printf( "\n");
@@ -327,19 +318,52 @@ QUAD	*new_quad5( int operator, QUAD *q1, QUAD *q2, QUAD *q3)
 	if( ! q3)
 	{
 		quad1 = end_quad_list( q1);
-		label1 = next_label();
-		quad1->next = new_quad( operator, quad1->dst_type, quad1->dst_index, TYPE_LABEL, label1, 0, 0);
-		quad1->next->next = q2;
+/*
+ *	backpatch ! quad into iffalse quad
+ */
+		if( quad1->operator == '!')
+		{
+			label1 = next_label();
+			quad1->operator = IFFALSE;
+			quad1->dst_type = quad1->op1_type;
+			quad1->dst_index = quad1->op1_index;
+			quad1->op1_type = TYPE_LABEL;
+			quad1->op1_index = label1;
+			quad1->next = q2;
+		}
+		else
+		{
+			label1 = next_label();
+			quad1->next = new_quad( operator, quad1->dst_type, quad1->dst_index, TYPE_LABEL, label1, 0, 0);
+			quad1->next->next = q2;
+		}
 		quad2 = end_quad_list( q2);
 		quad2->next = new_quad( LABEL, TYPE_LABEL, label1, 0, 0, 0, 0);
 	}
 	else
 	{
 		quad1 = end_quad_list( q1);
-		label1 = next_label();
-		label2 = next_label();
-		quad1->next = new_quad( operator, quad1->dst_type, quad1->dst_index, TYPE_LABEL, label1, 0, 0);
-		quad1->next->next = q2;
+/*
+ *	backpatch ! quad into iffalse quad
+ */
+		if( quad1->operator == '!')
+		{
+			label1 = next_label();
+			label2 = next_label();
+			quad1->operator = IFFALSE;
+			quad1->dst_type = quad1->op1_type;
+			quad1->dst_index = quad1->op1_index;
+			quad1->op1_type = TYPE_LABEL;
+			quad1->op1_index = label1;
+			quad1->next = q2;
+		}
+		else
+		{
+			label1 = next_label();
+			label2 = next_label();
+			quad1->next = new_quad( operator, quad1->dst_type, quad1->dst_index, TYPE_LABEL, label1, 0, 0);
+			quad1->next->next = q2;
+		}
 		quad2 = end_quad_list( q2);
 		quad2->next = new_quad( GOTO, TYPE_LABEL, label2, 0, 0, 0, 0);
 		quad2->next->next = new_quad( LABEL, TYPE_LABEL, label1, 0, 0, 0, 0);
@@ -349,23 +373,3 @@ QUAD	*new_quad5( int operator, QUAD *q1, QUAD *q2, QUAD *q3)
 	}
 	return q1;
 }
-
-/*
- *	allocate a quad8 function
-		$$.quad = new_quad8( ']', $1.index, $3.quad, 0);
- */
-QUAD	*new_quad8( int operator, int index, QUAD *q1, QUAD *q2)
-{
-	QUAD	*quad1;
-
-	quad1 = end_quad_list( q1);
-	if( data.st[ index].specifier == SPECIFIER_CHAR)
-		quad1->next = new_quad( operator, TYPE_TEMPORARY, next_temp(), data.st[ index].type, index, quad1->dst_type, quad1->dst_index);
-	else
-	{
-		quad1->next = new_quad( '*', TYPE_TEMPORARY, next_temp(), quad1->dst_type, quad1->dst_index, TYPE_CONSTANT, data.st[ index].sizeofspecifier );
-		quad1->next->next = new_quad( operator, TYPE_TEMPORARY, next_temp(), data.st[ index].type, index, quad1->next->dst_type, quad1->next->dst_index);
-	}
-	return q1;
-}
-

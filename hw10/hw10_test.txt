@@ -1,0 +1,77 @@
+rm -f lex.c yacc.c y.tab.h y.output *.o
+yacc -dv yacc.y 
+conflicts: 1 shift/reduce
+mv -f y.tab.c yacc.c
+gcc -g   -c -o yacc.o yacc.c
+lex  -t lex.l > lex.c
+gcc -g   -c -o lex.o lex.c
+gcc -g   -c -o main.o main.c
+gcc -g   -c -o quad.o quad.c
+gcc -g yacc.o lex.o main.o quad.o -lm -o calc
+rm lex.c yacc.c
+for caseid start time: Tue Nov  5 07:28:03 2013
+	t1 = 1
+	c1 = t1
+	t1 = c1
+	t2 = 2
+	t3 = t1 + t2
+	s2 = t3
+	t1 = s2
+	t2 = 4
+	t3 = t1 + t2
+	i4 = t3
+	t1 = c1
+	t2 = s2
+	t3 = i4
+	t4 = t2 / t3
+	t5 = 10
+	t6 = t4 * t5
+	t7 = t1 + t6
+	l8 = t7
+symbol table: 
+index: 1 identifier: c1 length: 3 specifier: char
+index: 2 identifier: s2 length: 3 specifier: short
+index: 3 constant: 2 length: 2 format: decimal
+index: 4 identifier: i4 length: 3 specifier: int
+index: 5 constant: 4 length: 2 format: decimal
+index: 6 identifier: l8 length: 3 specifier: long
+index: 7 constant: 8 length: 2 format: decimal
+index: 8 constant: 1 length: 2 format: decimal
+index: 9 constant: 10 length: 3 format: decimal
+for caseid start time: Tue Nov  5 07:28:03 2013
+	t1 = 10
+	t2 = c32 [ t1 ] 
+	c1 = t2
+	t1 = s2
+	t2 = 2
+	t3 = t1 + t2
+	t4 = t3 * 2
+	t5 = s16 [ t4 ] 
+	s2 = t5
+	t1 = i4
+	t2 = 4
+	t3 = t1 - t2
+	t4 = t3 * 4
+	t5 = i8 [ t4 ] 
+	i4 = t5
+	t1 = l8
+	t2 = 4
+	t3 = t1 + t2
+	t4 = t3 * 8
+	t5 = l4 [ t4 ] 
+	l8 = t5
+symbol table: 
+index: 1 identifier: c1 length: 3 specifier: char
+index: 2 identifier: c32[32] length: 4 specifier: char
+index: 3 constant: 32 length: 3 format: decimal
+index: 4 identifier: s2 length: 3 specifier: short
+index: 5 constant: 2 length: 2 format: decimal
+index: 6 identifier: s16[16] length: 4 specifier: short
+index: 7 constant: 16 length: 3 format: decimal
+index: 8 identifier: i4 length: 3 specifier: int
+index: 9 constant: 4 length: 2 format: decimal
+index: 10 identifier: i8[8] length: 3 specifier: int
+index: 11 constant: 8 length: 2 format: decimal
+index: 12 identifier: l8 length: 3 specifier: long
+index: 13 identifier: l4[4] length: 3 specifier: long
+index: 14 constant: 10 length: 3 format: decimal

@@ -1,0 +1,8 @@
+char c1;
+short s2;
+int i4;
+long l8;
+c1 = 1;
+s2 = c1 + 2;
+i4 = s2 + 4;
+l8 = c1 + s2 / i4 * 10;
