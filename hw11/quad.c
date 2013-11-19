@@ -270,7 +270,25 @@ int	next_label( void)
  */
 QUAD	*new_quad1( int operator, QUAD *q1, QUAD *q2)
 {
-	QUAD	*quad1;
+	QUAD *quad1;
+/*	
+*	check if optimize quad
+*/
+	if( q1->operator == '=' && q1->dst_type == TYPE_TEMPORARY && ( q1->op1_type == TYPE_IDENTIFIER || q1->op1_type == TYPE_CONSTANT) && q2->operator == '=' && q2->dst_type == TYPE_TEMPORARY && ( q2->op1_type == TYPE_IDENTIFIER || q2->op1_type == TYPE_CONSTANT))
+	{
+		data.temp--;
+		data.temp--;
+		quad1 = new_quad( operator, TYPE_TEMPORARY, next_temp(), q1->op1_type, q1->op1_index, q2->op1_type, q2->op1_index);
+		free_quad( q1);
+		free_quad( q2);
+		return quad1;
+	}
+	
+/*
+*	else do the previous thing
+*/
+	else
+	{
 	QUAD	*quad2;
 
 	quad1 = end_quad_list( q1);
@@ -278,6 +296,7 @@ QUAD	*new_quad1( int operator, QUAD *q1, QUAD *q2)
 	quad2 = end_quad_list( q2);
 	quad2->next = new_quad( operator, TYPE_TEMPORARY, next_temp(), quad1->dst_type, quad1->dst_index, quad2->dst_type, quad2->dst_index);
 	return q1;
+	}
 }
 
 /*
