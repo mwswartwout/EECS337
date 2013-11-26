@@ -51,7 +51,7 @@
 %left '<' '>' GE LE
 %left '+' '-'
 %left '*' '/' '%'
-%right UMINUS '~' /* supplies precedence for unary minus */
+%right UMINUS '~' '!' /* supplies precedence for unary minus */
 
 %% 	/* beginning of rules section */
 
@@ -95,6 +95,10 @@ stmts	: IF '(' expr ')' stmts
 	| ident '=' expr ';'
 	{
 		$$.quad = new_quad3( '=', $1.index, $3.quad);
+	}
+	| ident '[' expr ']' '=' expr ';'
+	{
+		$$.quad = new_quad8( '[', $1.index, $3.quad, $6.quad);
 	}
 	;
 expr	: expr '+' expr
@@ -166,6 +170,10 @@ expr	: expr '+' expr
 	| '-' expr %prec UMINUS 
 	{
 		$$.quad = new_quad2( UMINUS, $2.quad);
+	}
+	| '!' expr 
+	{
+		$$.quad = new_quad2( '!', $2.quad);
 	}
 	| number
 	{

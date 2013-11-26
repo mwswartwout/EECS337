@@ -1,0 +1,97 @@
+rm -f lex.c yacc.c y.tab.h y.output *.o
+yacc -dv yacc.y 
+conflicts: 1 shift/reduce
+mv -f y.tab.c yacc.c
+gcc -g   -c -o yacc.o yacc.c
+lex  -t lex.l > lex.c
+gcc -g   -c -o lex.o lex.c
+gcc -g   -c -o main.o main.c
+gcc -g   -c -o quad.o quad.c
+gcc -g yacc.o lex.o main.o quad.o -lm -o calc
+rm lex.c yacc.c
+for caseid start time: Wed Nov 13 06:49:07 2013
+	c1 = 1
+	s2 = c1 + 2
+	i4 = s2 + 4
+	t2 = s2 / i4
+	t3 = t2 * 10
+	l8 = c1 + t3
+symbol table: 
+index: 1 identifier: c1 length: 3 specifier: char
+index: 2 identifier: s2 length: 3 specifier: short
+index: 3 constant: 2 length: 2 format: decimal
+index: 4 identifier: i4 length: 3 specifier: int
+index: 5 constant: 4 length: 2 format: decimal
+index: 6 identifier: l8 length: 3 specifier: long
+index: 7 constant: 8 length: 2 format: decimal
+index: 8 constant: 1 length: 2 format: decimal
+index: 9 constant: 10 length: 3 format: decimal
+Error: memory leak: 40
+for caseid start time: Wed Nov 13 06:49:08 2013
+	c1 = c32 [ 10 ] 
+	t1 = s2 + 2
+	t2 = t1 * 2
+	s2 = s16 [ t2 ] 
+	t1 = i4 - 4
+	t2 = t1 * 4
+	i4 = i8 [ t2 ] 
+	t1 = l8 + 4
+	t2 = t1 * 8
+	l8 = l4 [ t2 ] 
+symbol table: 
+index: 1 identifier: c1 length: 3 specifier: char
+index: 2 identifier: c32[32] length: 4 specifier: char
+index: 3 constant: 32 length: 3 format: decimal
+index: 4 identifier: s2 length: 3 specifier: short
+index: 5 constant: 2 length: 2 format: decimal
+index: 6 identifier: s16[16] length: 4 specifier: short
+index: 7 constant: 16 length: 3 format: decimal
+index: 8 identifier: i4 length: 3 specifier: int
+index: 9 constant: 4 length: 2 format: decimal
+index: 10 identifier: i8[8] length: 3 specifier: int
+index: 11 constant: 8 length: 2 format: decimal
+index: 12 identifier: l8 length: 3 specifier: long
+index: 13 identifier: l4[4] length: 3 specifier: long
+index: 14 constant: 10 length: 3 format: decimal
+for caseid start time: Wed Nov 13 06:49:08 2013
+	c1 = 1
+	s2 = 2
+	i4 = 4
+	l8 = 8
+	c32 [ 10 ] = 1
+	t1 = s2 + 2
+	t3 = t1 * 2
+	t2 = 2
+	s16 [ t3 ] = t2
+	t1 = i4 - 4
+	t3 = t1 * 4
+	t2 = 4
+	i8 [ t3 ] = t2
+	t1 = l8 - 8
+	t5 = t1 * 8
+	t3 = s2 * i4
+	t4 = t3 / l8
+	t4 = c1 + t4
+	l4 [ t5 ] = t4
+	t1 = c1 + s2
+	t5 = t1 * 8
+	t2 = l8 - 8
+	t3 = t2 * 8
+	t4 = l4 [ t3 ] 
+	l4 [ t5 ] = t4
+symbol table: 
+index: 1 identifier: c1 length: 3 specifier: char
+index: 2 identifier: c32[32] length: 4 specifier: char
+index: 3 constant: 32 length: 3 format: decimal
+index: 4 identifier: s2 length: 3 specifier: short
+index: 5 constant: 2 length: 2 format: decimal
+index: 6 identifier: s16[16] length: 4 specifier: short
+index: 7 constant: 16 length: 3 format: decimal
+index: 8 identifier: i4 length: 3 specifier: int
+index: 9 constant: 4 length: 2 format: decimal
+index: 10 identifier: i8[8] length: 3 specifier: int
+index: 11 constant: 8 length: 2 format: decimal
+index: 12 identifier: l8 length: 3 specifier: long
+index: 13 identifier: l4[4] length: 3 specifier: long
+index: 14 constant: 1 length: 2 format: decimal
+index: 15 constant: 10 length: 3 format: decimal
