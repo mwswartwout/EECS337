@@ -4,14 +4,15 @@
 *
 * DESC:		EECS 337 Assignment 3
 *
-* AUTHOR:	mws85
+* AUTHOR:	caseid
 *
-* DATE:		September 23, 2013
+* DATE:		September 10, 2013
 *
 * EDIT HISTORY:	
 *
+*	Updated for Assignment 4 September 17, 2013
+*
 *******************************************************************************/
-
 D			[0-9]
 L			[a-zA-Z_]
 H			[a-fA-F0-9]
@@ -28,8 +29,9 @@ IS			(u|U|l|L)*
 
 %%
 "/*"			{ comment(); }
-"//"			{ commentdouble(); }
-"#"			{ commentdouble(); }
+"//"			{ comment2(); }
+"#"			{ comment2(); }
+
 "auto"			{ count(AUTO); yylval.token = AUTO; return(AUTO); }
 "break"			{ count(BREAK); yylval.token = BREAK; return(BREAK); }
 "case"			{ count(CASE); yylval.token = CASE; return(CASE); }
@@ -63,18 +65,18 @@ IS			(u|U|l|L)*
 "volatile"		{ count(VOLATILE); yylval.token = VOLATILE; return(VOLATILE); }
 "while"			{ count(WHILE); yylval.token = WHILE; return(WHILE); }
 
-{L}({L}|{D})*		{ count(check_type()); yylval.token = IDENTIFIER; yylval.index = attribute( IDENTIFIER, yytext, yyleng, FORMAT_NONE); return(check_type()); }
+{L}({L}|{D})*		{ count(IDENTIFIER); yylval.token = IDENTIFIER; yylval.attribute = attribute( IDENTIFIER, yytext, yyleng, FORMAT_NONE); return(check_type()); }
 
-0[xX]{H}+{IS}?		{ count(CONSTANT); yylval.token = CONSTANT; yylval.index = attribute( CONSTANT, yytext, yyleng, FORMAT_NONE); return(CONSTANT); }
-0{D}+{IS}?		{ count(CONSTANT); yylval.token = CONSTANT; yylval.index = attribute( CONSTANT, yytext, yyleng, FORMAT_NONE); return(CONSTANT); }
-{D}+{IS}?		{ count(CONSTANT); yylval.token = CONSTANT; yylval.index = attribute( CONSTANT, yytext, yyleng, FORMAT_NONE); return(CONSTANT); }
-'(\\.|[^\\'])+'		{ count(CONSTANT); yylval.token = CONSTANT; yylval.index = attribute( CONSTANT, yytext, yyleng, FORMAT_NONE); return(CONSTANT); }
+0[xX]{H}+{IS}?		{ count(CONSTANT); yylval.token = CONSTANT; yylval.attribute = attribute( CONSTANT, yytext, yyleng, FORMAT_HEXADECIMAL); return(CONSTANT); }
+0{D}+{IS}?		{ count(CONSTANT); yylval.token = CONSTANT; yylval.attribute = attribute( CONSTANT, yytext, yyleng, FORMAT_OCTAL); return(CONSTANT); }
+{D}+{IS}?		{ count(CONSTANT); yylval.token = CONSTANT; yylval.attribute = attribute( CONSTANT, yytext, yyleng, FORMAT_DECIMAL); return(CONSTANT); }
+'(\\.|[^\\'])+'		{ count(CONSTANT); yylval.token = CONSTANT; yylval.attribute = attribute( CONSTANT, yytext, yyleng, FORMAT_CHAR); return(CONSTANT); }
 
-{D}+{E}{FS}?		{ count(CONSTANT); yylval.token = CONSTANT; yylval.index = attribute( CONSTANT, yytext, yyleng, FORMAT_NONE); return(CONSTANT); }
-{D}*"."{D}+({E})?{FS}?	{ count(CONSTANT); yylval.token = CONSTANT; yylval.index = attribute( CONSTANT, yytext, yyleng, FORMAT_NONE); return(CONSTANT); }
-{D}+"."{D}*({E})?{FS}?	{ count(CONSTANT); yylval.token = CONSTANT; yylval.index = attribute( CONSTANT, yytext, yyleng, FORMAT_NONE); return(CONSTANT); }
+{D}+{E}{FS}?		{ count(CONSTANT); yylval.token = CONSTANT; yylval.attribute = attribute( CONSTANT, yytext, yyleng, FORMAT_FLOAT); return(CONSTANT); }
+{D}*"."{D}+({E})?{FS}?	{ count(CONSTANT); yylval.token = CONSTANT; yylval.attribute = attribute( CONSTANT, yytext, yyleng, FORMAT_FLOAT); return(CONSTANT); }
+{D}+"."{D}*({E})?{FS}?	{ count(CONSTANT); yylval.token = CONSTANT; yylval.attribute = attribute( CONSTANT, yytext, yyleng, FORMAT_FLOAT); return(CONSTANT); }
 
-\"(\\.|[^\\"])*\"	{ count(STRING_LITERAL); yylval.token = STRING_LITERAL; yylval.index = attribute( STRING_LITERAL, yytext, yyleng, FORMAT_NONE); return(STRING_LITERAL); }
+\"(\\.|[^\\"])*\"	{ count(STRING_LITERAL); yylval.token = STRING_LITERAL; yylval.attribute = attribute( STRING_LITERAL, yytext, yyleng, FORMAT_NONE); return(STRING_LITERAL); }
 
 ">>="			{ count(RIGHT_ASSIGN); yylval.token = RIGHT_ASSIGN; return(RIGHT_ASSIGN); }
 "<<="			{ count(LEFT_ASSIGN); yylval.token = LEFT_ASSIGN; return(LEFT_ASSIGN); }
@@ -97,17 +99,17 @@ IS			(u|U|l|L)*
 ">="			{ count(GE_OP); yylval.token = GE_OP; return(GE_OP); }
 "=="			{ count(EQ_OP); yylval.token = EQ_OP; return(EQ_OP); }
 "!="			{ count(NE_OP); yylval.token = NE_OP; return(NE_OP); }
-";"			{ count(';' ); yylval.token = ';'; return(';'); }
-"{"			{ count('{' ); yylval.token = '{'; return('{'); }
-"}"			{ count('}' ); yylval.token = '}'; return('}'); }
-","			{ count(',' ); yylval.token = ','; return(','); }
-":"			{ count(':' ); yylval.token = ':'; return(':'); }
-"="			{ count('=' ); yylval.token =  '='; return('='); }
-"("			{ count('(' ); yylval.token = '('; return('('); }
+";"			{ count(';'); yylval.token = ';'; return(';'); }
+"{"			{ count('{'); yylval.token = '{'; return('{'); }
+"}"			{ count('}'); yylval.token = '}'; return('}'); }
+","			{ count(','); yylval.token = ','; return(','); }
+":"			{ count(':'); yylval.token = ':'; return(':'); }
+"="			{ count('='); yylval.token = '='; return('='); }
+"("			{ count('('); yylval.token = '('; return('('); }
 ")"			{ count(')'); yylval.token = ')'; return(')'); }
 "["			{ count('['); yylval.token = '['; return('['); }
 "]"			{ count(']'); yylval.token = ']'; return(']'); }
-"."			{ count('-'); yylval.token = '.'; return('.'); }
+"."			{ count('.'); yylval.token = '.'; return('.'); }
 "&"			{ count('&'); yylval.token = '&'; return('&'); }
 "!"			{ count('!'); yylval.token = '!'; return('!'); }
 "~"			{ count('~'); yylval.token = '~'; return('~'); }
@@ -120,9 +122,9 @@ IS			(u|U|l|L)*
 ">"			{ count('>'); yylval.token = '>'; return('>'); }
 "^"			{ count('^'); yylval.token = '^'; return('^'); }
 "|"			{ count('|'); yylval.token = '|'; return('|'); }
-"?"			{ count('?'); yylval.token = '?'; return('?'); } 
+"?"			{ count('?'); yylval.token = '?'; return('?'); }
 
-[ \t\v\n\f]		{ count(yytext[ 0]); /* skip white space characters */ }
+[ \t\v\n\f]		{ count( yytext[0]); /* skip white space characters */ }
 .			{ /* ignore bad characters */ }
 
 %%
@@ -156,25 +158,29 @@ loop:
 	      	  putchar(c1);
 }
 
-void commentdouble( void)
+/*
+ *	c slash-slash comment function
+ */
+void	comment2( void)
 {
 	char c;
-	if ( IS_FLAGS_ECHO( data.flags))
-		ECHO;
+
+	if( IS_FLAGS_ECHO( data.flags))
+	    ECHO;
 	while(( c = input()) != '\n' && c != 0)
-		if( c && IS_FLAGS_ECHO( data.flags))
-			putchar( c);
-		if ( c != 0)
-			if( IS_FLAGS_ECHO( data.flags))
-				putchar( c);
+	      if( c && IS_FLAGS_ECHO( data.flags))
+	      	  putchar(c);
+	if( c != 0)
+	      if( IS_FLAGS_ECHO( data.flags))
+	      	  putchar(c);
 }
 
 void count( int token)
 {
-	if( IS_FLAGS_DEBUG( data.flags))
-		print_token( token, yytext);
-
 	int i;
+
+	if( IS_FLAGS_DEBUG( data.flags))
+	    print_token( token, yytext);
 
 	for (i = 0; yytext[i] != '\0'; i++)
 		if (yytext[i] == '\n')

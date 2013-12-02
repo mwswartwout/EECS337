@@ -9,7 +9,7 @@ gcc -g   -c -o main.o main.c
 gcc -g   -c -o quad.o quad.c
 gcc -g yacc.o lex.o main.o quad.o -lm -o calc
 rm lex.c yacc.c
-for caseid start time: Sun Oct 27 11:13:05 2013
+for caseid start time: Tue Nov 26 10:38:13 2013
 Enter calculator expression and $ to exit
 	t1 = a3
 	t2 = 0x01
@@ -109,7 +109,7 @@ index: 4 constant: 2 length: 2 format: decimal
 index: 5 identifier: b2 length: 3
 index: 6 identifier: a2 length: 3
 index: 7 identifier: ab1 length: 4
-for caseid start time: Sun Oct 27 11:13:05 2013
+for caseid start time: Tue Nov 26 10:38:13 2013
 Enter calculator expression and $ to exit
 	t1 = a3
 	t2 = 0x01

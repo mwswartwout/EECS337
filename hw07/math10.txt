@@ -1,9 +1,17 @@
 a = 3e1+2e2
+a
 b = 3e1*2e2
+b
 c = 3e1-2e2
+c
 d = 3e1/2e2
+d
 e = -3e1+2e2
+e
 f = -3e1+-2e2
+f
 g = -3e1*-2e2
+g
 h = 3e1*-2e2
+h
 a+b+c+d+e+f+g+h

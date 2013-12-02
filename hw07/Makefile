@@ -10,6 +10,8 @@
 #
 # EDIT HISTORY:	
 #
+#		Updated for EECS 337 Assignment 7 October 15, 2013 
+#
 #-----------------------------------------------------------------------------
 .KEEP_STATE:
 SHELL=/bin/bash
@@ -42,7 +44,7 @@ clean	:
 	rm -f first.c second.c y.tab.h y.output *.o
 
 totar	:
-	tar cvf hw06_caseid.tar book/* Makefile hw06_test.sh yystype.h first.l second.y calc.c math0.txt math1.txt math2.txt math3.txt math4.txt math5.txt math6.txt math7.txt math8.txt math9.txt 
+	tar cvf hw07_caseid.tar book/* Makefile hw07_test.sh yystype.h first.l second.y calc.c math10.txt math11.txt math12.txt math13.txt math14.txt math15.txt math16.txt math17.txt math18.txt math19.txt 
 
 fromtar	:
-	tar xvf hw06_caseid.tar 
+	tar xvf hw07_caseid.tar 

@@ -1,0 +1,54 @@
+; for caseid start time: Wed Nov 20 08:37:39 2013
+; automatic code generation for PIC16F1827
+; EECS337 Compiler Design
+; by: caseid, date: Fall 2013
+; for PIC16F1827 processor
+; CPU configuration
+	list		p=16f1827      ; list directive to define processor
+	#include	<p16f1827.inc> ; processor specific variable definitions
+	__CONFIG _CONFIG1, _FOSC_INTOSC & _WDTE_OFF & _PWRTE_OFF & _MCLRE_ON & _CP_OFF & _CPD_OFF & _BOREN_OFF & _CLKOUTEN_ON & _IESO_OFF & _FCMEN_OFF
+	__CONFIG _CONFIG2, _WRT_OFF & _PLLEN_OFF & _STVREN_OFF & _BORV_19 & _LVP_OFF
+;symbol table:
+i_ EQU 0xc
+;symbol table free:
+i_1 EQU 0xd
+i_2 EQU 0xe
+i_3 EQU 0xf
+; power-up or reset vector
+	org     0x0000            ; processor reset vector
+reset:			
+	pagesel init
+	goto	init	; skip interrupt vector space (reserved)
+; interrupt vector 
+	org 	0x04
+inter:			; on interrupt PC set to 0x04 and automatically clears GIE
+	retfie		; return from interrupt and automatically sets GIE
+; beginning of program code
+	org	0x08
+init:
+; On reset all ports are inputs.
+	movlb	1	; switch to bank 1 memory
+;	clrf	TRISA		; set PORTA to all outputs
+	clrf	TRISB		; set PORTB to all outputs
+	movlb	0	; switch to bank 0 memory
+mloop:
+; here begins the main program
+	movlw	0x00
+	movwf	i_
+	movf	PORTA,w
+	call	main
+	goto	mloop
+	return
+main:
+	movlw	0x01
+	movwf	i_1
+	movlw	0x02
+	movwf	i_2
+	movlw	0x03
+	movwf	i_3
+	return	; if main does not have a return
+; only standard library function
+printf:			
+	movwf	PORTB	; output w to standard output (stdout)
+	return
+	end		; end of program code

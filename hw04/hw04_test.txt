@@ -1,17 +1,95 @@
 rm -f scan.c gram.c y.tab.h y.output *.o
 yacc -dv gram.y 
-yacc: 1 shift/reduce conflict.
+conflicts: 1 shift/reduce
 mv -f y.tab.c gram.c
 gcc -g   -c -o gram.o gram.c
+In file included from gram.y:15:0:
+yystype.h:93:0: warning: "YYDEBUG" redefined [enabled by default]
+ #define YYDEBUG 1
+ ^
+In file included from yystype.h:58:0,
+                 from gram.y:15:
+y.tab.h:37:0: note: this is the location of the previous definition
+ # define YYDEBUG 0
+ ^
 lex  -t scan.l > scan.c
 gcc -g   -c -o scan.o scan.c
+In file included from scan.l:25:0:
+yystype.h:93:0: warning: "YYDEBUG" redefined [enabled by default]
+ #define YYDEBUG 1
+ ^
+In file included from yystype.h:58:0,
+                 from scan.l:25:
+y.tab.h:37:0: note: this is the location of the previous definition
+ # define YYDEBUG 0
+ ^
 gcc -g   -c -o main.o main.c
+In file included from main.c:16:0:
+yystype.h:93:0: warning: "YYDEBUG" redefined [enabled by default]
+ #define YYDEBUG 1
+ ^
+In file included from yystype.h:58:0,
+                 from main.c:16:
+y.tab.h:37:0: note: this is the location of the previous definition
+ # define YYDEBUG 0
+ ^
 gcc -g   -c -o attribute.o attribute.c
+In file included from attribute.c:14:0:
+yystype.h:93:0: warning: "YYDEBUG" redefined [enabled by default]
+ #define YYDEBUG 1
+ ^
+In file included from yystype.h:58:0,
+                 from attribute.c:14:
+y.tab.h:37:0: note: this is the location of the previous definition
+ # define YYDEBUG 0
+ ^
 gcc -g gram.o scan.o main.o attribute.o -o ansi_c
 rm gram.c scan.c
-for mws85  start time: Tue Sep 24 02:27:16 2013
-Usage: ansi_c [[+|-]echo] [[+|-]debug] [[+|-]yydebug] [[+|-]symbol] [filename] [...]
-for mws85  start time: Tue Sep 24 02:27:16 2013
-Usage: ansi_c [[+|-]echo] [[+|-]debug] [[+|-]yydebug] [[+|-]symbol] [filename] [...]
-for mws85  start time: Tue Sep 24 02:27:16 2013
-Usage: ansi_c [[+|-]echo] [[+|-]debug] [[+|-]yydebug] [[+|-]symbol] [filename] [...]
+for caseid start time: Tue Nov 26 10:50:31 2013
+attribute table: 
+next: 0x199cfe0 token: CONSTANT	buffer: 0	length: 2	format: DECIMAL	decimal: 0	
+next: 0x199cf80 token: STRING_LITERAL	buffer: "w:%d,\tx:%d,\ty:%d,\tz:%d\n"	length: 30	format: NONE	
+next: 0x199cf20 token: IDENTIFIER	buffer: printf	length: 7	format: NONE	
+next: 0x199cec0 token: CONSTANT	buffer: 8	length: 2	format: DECIMAL	decimal: 8	
+next: 0x199ce60 token: CONSTANT	buffer: 6	length: 2	format: DECIMAL	decimal: 6	
+next: 0x199ce00 token: CONSTANT	buffer: 7	length: 2	format: DECIMAL	decimal: 7	
+next: 0x199cda0 token: CONSTANT	buffer: 5	length: 2	format: DECIMAL	decimal: 5	
+next: 0x199cd40 token: IDENTIFIER	buffer: j	length: 2	format: NONE	
+next: 0x199cce0 token: CONSTANT	buffer: 4	length: 2	format: DECIMAL	decimal: 4	
+next: 0x199cc80 token: IDENTIFIER	buffer: i	length: 2	format: NONE	
+next: 0x199cc20 token: IDENTIFIER	buffer: z	length: 2	format: NONE	
+next: 0x199cbc0 token: IDENTIFIER	buffer: y	length: 2	format: NONE	
+next: 0x199cb60 token: IDENTIFIER	buffer: x	length: 2	format: NONE	
+next: 0x1998200 token: IDENTIFIER	buffer: w	length: 2	format: NONE	
+next: 0x19981a0 token: IDENTIFIER	buffer: argv	length: 5	format: NONE	
+next: 0x1998140 token: IDENTIFIER	buffer: argc	length: 5	format: NONE	
+next: (nil) token: IDENTIFIER	buffer: main	length: 5	format: NONE	
+for caseid start time: Tue Nov 26 10:50:31 2013
+attribute table: 
+next: 0x1d6ffe0 token: CONSTANT	buffer: 0	length: 2	format: DECIMAL	decimal: 0	
+next: 0x1d6ff80 token: STRING_LITERAL	buffer: "w:%d,\tx:%d,\ty:%d,\tz:%d\n"	length: 30	format: NONE	
+next: 0x1d6ff20 token: IDENTIFIER	buffer: printf	length: 7	format: NONE	
+next: 0x1d6fec0 token: CONSTANT	buffer: 7	length: 2	format: DECIMAL	decimal: 7	
+next: 0x1d6fe60 token: CONSTANT	buffer: 6	length: 2	format: DECIMAL	decimal: 6	
+next: 0x1d6fe00 token: CONSTANT	buffer: 5	length: 2	format: DECIMAL	decimal: 5	
+next: 0x1d6fda0 token: CONSTANT	buffer: 4	length: 2	format: DECIMAL	decimal: 4	
+next: 0x1d6fd40 token: IDENTIFIER	buffer: j	length: 2	format: NONE	
+next: 0x1d6fce0 token: CONSTANT	buffer: 3	length: 2	format: DECIMAL	decimal: 3	
+next: 0x1d6fc80 token: IDENTIFIER	buffer: i	length: 2	format: NONE	
+next: 0x1d6fc20 token: IDENTIFIER	buffer: z	length: 2	format: NONE	
+next: 0x1d6fbc0 token: IDENTIFIER	buffer: y	length: 2	format: NONE	
+next: 0x1d6fb60 token: IDENTIFIER	buffer: x	length: 2	format: NONE	
+next: 0x1d6b200 token: IDENTIFIER	buffer: w	length: 2	format: NONE	
+next: 0x1d6b1a0 token: IDENTIFIER	buffer: argv	length: 5	format: NONE	
+next: 0x1d6b140 token: IDENTIFIER	buffer: argc	length: 5	format: NONE	
+next: (nil) token: IDENTIFIER	buffer: main	length: 5	format: NONE	
+for caseid start time: Tue Nov 26 10:50:31 2013
+attribute table: 
+next: 0x2354c80 token: IDENTIFIER	buffer: main	length: 5	format: NONE	
+next: 0x2354c20 token: IDENTIFIER	buffer: c	length: 2	format: NONE	
+next: 0x2354bc0 token: STRING_LITERAL	buffer: "%d\n"	length: 7	format: NONE	
+next: 0x2354b60 token: IDENTIFIER	buffer: printf	length: 7	format: NONE	
+next: 0x2350200 token: CONSTANT	buffer: 1	length: 2	format: DECIMAL	decimal: 1	
+next: 0x23501a0 token: IDENTIFIER	buffer: b	length: 2	format: NONE	
+next: 0x2350140 token: CONSTANT	buffer: 2	length: 2	format: DECIMAL	decimal: 2	
+next: (nil) token: IDENTIFIER	buffer: x	length: 2	format: NONE	

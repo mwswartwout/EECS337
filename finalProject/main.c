@@ -2,15 +2,13 @@
 *
 * FILE:		main.c
 *
-* DESC:		EECS 337 Assignment 3
+* DESC:		EECS 337 Project
 *
 * AUTHOR:	caseid
 *
-* DATE:		September 10, 2013
+* DATE:		December 5, 2013
 *
 * EDIT HISTORY:	
-*
-*	Updated for Assignment 4 September 17, 2013
 *
 *******************************************************************************/
 #include	"yystype.h"
@@ -26,6 +24,7 @@ DATA	data;
 int	main_init( void)
 {
 	memset((void*)&data, 0, sizeof( DATA));
+	data.address = TOP_MEMORY;
 	return 0;
 }
 
@@ -35,24 +34,35 @@ int	main_init( void)
 int	main_exit( void)
 {
 /*
- *	print the attribute table 
+ *	print the symbol table 
  */
 #ifdef	YYDEBUG
 	if( IS_FLAGS_SYMBOL( data.flags))
 	{
-		print_attribute_table();
+		print_symbol_table();
 	}
 #endif
 /*
- *	free the attribute table 
+ *	deallocate the symbol table list
  */
-	free_attribute_table();
+	free_tuple_list( data.symbol_table);
+	free_tuple_list( data.symbol_table_free);
 /*
- *	check for a memory leak
+ *	check if memory leak
  */
 	if( data.memory)
-		fprintf( stderr, "Error: memory leak: %d\n", data.memory);
-	return 0;
+		fprintf( stderr, "Error: memory deallocation error: %d\n", data.memory);
+/*
+ *	check if compiler warnings
+ */
+	if( data.warnings)
+		fprintf( stderr, "Warning: compiler warnings: %d\n", data.warnings);
+/*
+ *	check if compiler errors 
+ */
+	if( data.errors)
+		fprintf( stderr, "Error: compiler errors: %d\n", data.errors);
+	return( data.errors);
 }
 
 /*
@@ -75,14 +85,19 @@ void	main_process_flags( char *command)
 			CLR_FLAGS_DEBUG( data.flags);
 			return;
 		}
+		else if( !strncmp( command, "-yydebug", strlen( command)))
+		{
+			yydebug = 0;
+			return;
+		}
 		else if( !strncmp( command, "-symbol", strlen( command)))
 		{
 			CLR_FLAGS_SYMBOL( data.flags);
 			return;
 		}
-		else if( !strncmp( command, "-yydebug", strlen( command)))
+		else if( !strncmp( command, "-address", strlen( command)))
 		{
-			yydebug = 0;
+			CLR_FLAGS_ADDRESS( data.flags);
 			return;
 		}
 		break;
@@ -97,15 +112,25 @@ void	main_process_flags( char *command)
 			SET_FLAGS_DEBUG( data.flags);
 			return;
 		}
+		else if( !strncmp( command, "+yydebug", strlen( command)))
+		{
+			yydebug = 1;
+			return;
+		}
 		else if( !strncmp( command, "+symbol", strlen( command)))
 		{
 			SET_FLAGS_SYMBOL( data.flags);
 			return;
 		}
-		else if( !strncmp( command, "+yydebug", strlen( command)))
+		else if( !strncmp( command, "+address", strlen( command)))
 		{
-			yydebug = 1;
+			SET_FLAGS_ADDRESS( data.flags);
 			return;
+		}
+		else if( !strncmp( command, "+test", strlen( command)))
+		{
+			code_generator_instr_test();
+			exit( 0);
 		}
 		break;
 	default:
@@ -124,6 +149,7 @@ void	main_process_flags( char *command)
 			if( status = yyparse())
 			{
 				fprintf( stderr, "Error: yyparse %d\n", status);
+				data.errors++;
 			}
 /*
  *	close file 
@@ -132,7 +158,7 @@ void	main_process_flags( char *command)
 			return;
 		}
 	}
-	fprintf( stdout, "Usage: ansi_c [[+|-]echo] [[+|-]debug] [[+|-]symbol] [[+|-]yydebug] [filename] [...]\n");
+	fprintf( stdout, "Usage: ansi_c [[+|-]echo] [[+|-]debug] [[+|-]yydebug] [[+|-]symbol] [[+|-]address] [+test] [filename] [...]\n");
 	exit( -1);
 }
 
@@ -147,7 +173,7 @@ int	main( int argc, char *argv[])
  *	print start of test time
  */
 	time( &t);
-	fprintf( stdout, "for caseid start time: %s", ctime( &t));
+	fprintf( stdout, "; for caseid start time: %s", ctime( &t));
 /*
  *	initialize or constructor, init
  */
@@ -172,6 +198,7 @@ int	main( int argc, char *argv[])
 		if(( status = yyparse()))
 		{
 			fprintf( stderr, "Error: yyparse %d\n", status);
+				data.errors++;
 		}
 	}
 /*

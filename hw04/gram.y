@@ -4,9 +4,9 @@
 *
 * DESC:		EECS 337 Assignment 3
 *
-* AUTHOR:       mws85
+* AUTHOR:       caseid
 *
-* DATE:		September 17, 2013
+* DATE:		September 10, 2013
 *
 * EDIT HISTORY:	
 *
@@ -14,7 +14,6 @@
 %{
 #include	"yystype.h"
 %}
-
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
 %token AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN

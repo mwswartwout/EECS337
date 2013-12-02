@@ -2,11 +2,11 @@
 #
 # FILE:		Makefile
 #
-# DESC:		EECS 337 Assignment 4
+# DESC:		EECS 337 Project
 #
 # AUTHOR:	caseid
 #
-# DATE:		September 17, 2013
+# DATE:		December 5, 2013
 #
 # EDIT HISTORY:	
 #
@@ -27,19 +27,25 @@ YFLAGS	= -dv
 LFLAGS	=
 CFLAGS	= -g
 
-SRC	= gram.y scan.l main.c attribute.c
-OBJ	= gram.o scan.o main.o attribute.o
+#
+#	to make all
+#
+all:		ansi_c 
+
+SRC	= gram.y scan.l main.c audit.c tuple.c symbols.c codegen.c 
+OBJ	= gram.o scan.o main.o audit.o tuple.o symbols.o codegen.o 
 
 ansi_c :	$(OBJ)
 	$(LINK) $(CFLAGS) $(OBJ) -o ansi_c
 
-scan.o	: y.tab.h
+scan.o	: y.tab.h 
 
 clean	:
-	rm -f scan.c gram.c y.tab.h y.output *.o
+	rm -f gram.c y.tab.h y.output *.o
 
 totar	:
-	tar cvf hw04_caseid.tar hw04_test.sh Makefile attribute.c
+	tar cvf project_caseid.tar Makefile project_test.sh main.c scan.l gram.y yystype.h tokens.h audit.c tuple.c symbols.c codegen.c test1.c test2.c test3.c test3.txt mustang.c gram.diff scan.diff
 
 fromtar	:
-	tar xvf hw04_caseid.tar 
+	tar xvf project_caseid.tar 
+

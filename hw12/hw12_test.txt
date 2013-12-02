@@ -1,0 +1,220 @@
+rm -f lex.c yacc.c y.tab.h y.output *.o
+yacc -dv yacc.y 
+conflicts: 1 shift/reduce
+mv -f y.tab.c yacc.c
+gcc -g   -c -o yacc.o yacc.c
+lex  -t lex.l > lex.c
+gcc -g   -c -o lex.o lex.c
+gcc -g   -c -o main.o main.c
+gcc -g   -c -o quad.o quad.c
+gcc -g yacc.o lex.o main.o quad.o -lm -o calc
+rm lex.c yacc.c
+for mws85 start time: Mon Nov 25 22:08:45 2013
+	t1 = a3 & 0x01
+	IFTRUE t1 GOTO label1
+	a3 = 3 + 2
+label1: 
+	t2 = b2 | 0x01
+	IFTRUE t2 GOTO label2
+	t3 = - 3
+	t4 = - 2
+	b2 = t3 * t4
+label2: 
+	t5 = a3 ^ 0x01
+	IFTRUE t5 GOTO label3
+	a3 = a3 / b2
+	GOTO label4
+label3: 
+	a3 = 0x01
+label4: 
+	t6 = b2 % 0x01
+	IFTRUE t6 GOTO label5
+	t7 = ~ a3
+	t8 = - b2
+	b2 = t7 - t8
+label5: 
+	t9 = a3 & a2
+	IFTRUE t9 GOTO label6
+	t11 = ~ 2
+	t11 = 3 + t11
+	t12 = a3 * b2
+	ab1 = t11 * t12
+	GOTO label7
+label6: 
+	t13 = 3 - 2
+	t14 = 3 - 2
+	ab1 = t13 % t14
+label7: 
+	t15 = a3 & 0x01
+	IFTRUE t15 GOTO label10
+	t16 = b2 | 0x01
+	IFTRUE t16 GOTO label8
+	a3 = 3 + 2
+	GOTO label9
+label8: 
+	t17 = - 3
+	t18 = - 2
+	b2 = t17 * t18
+label9: 
+label10: 
+; automatic code generation for PIC16F1827
+; EECS337 Compiler Design
+; by: mws85, date: Fall 2013
+; for PIC16F1827 processor
+; CPU configuration
+	list		p=16f1827      ; list directive to define processor
+	#include	<p16f1827.inc> ; processor specific variable definitions
+	__CONFIG _CONFIG1, _FOSC_INTOSC & _WDTE_OFF & _PWRTE_OFF & _MCLRE_ON & _CP_OFF & _CPD_OFF & _BOREN_OFF & _CLKOUTEN_ON & _IESO_OFF & _FCMEN_OFF
+	__CONFIG _CONFIG2, _WRT_OFF & _PLLEN_OFF & _STVREN_OFF & _BORV_19 & _LVP_OFF
+; generate symbol table: 
+a3_ EQU 0x0
+b2_ EQU 0x0
+a2_ EQU 0x0
+ab1_ EQU 0x0
+; generate temporary addresses: 
+; power-up or reset vector
+	org     0x0000            ; processor reset vector
+	pagesel init
+	goto	init	; skip interrupt vector space (reserved)
+; interrupt vector 
+	org 	0x04
+inter:			; on interrupt PC set to 0x04 and automatically clears GIE
+	retfie		; return from interrupt and automatically sets GIE
+; beginning of program code
+	org	0x08
+init:
+; On reset all ports are inputs.
+	movlb	1	; switch to bank 1 memory
+;	clrf	TRISA		; set PORTA to all outputs
+	clrf	TRISB		; set PORTB to all outputs
+	movlb	0	; switch to bank 0 memory
+mloop:
+; read from the standard input (stdin)
+	movf	PORTA,w
+	nop
+	movlw	0x1
+	andwf	a3,w
+	movwf	t1_
+	movf	t1_,w
+	btfsc	0x3,2
+	goto	label1
+	movlw	0x2
+	addlw	0x3
+	movwf	a3_
+label1:
+	movlw	0x1
+	iorwf	b2,w
+	movwf	t2_
+	movf	t2_,w
+	btfsc	0x3,2
+	goto	label2
+	movlw	0x3
+	sublw	0x0
+	movwf	t3_
+	movlw	0x2
+	sublw	0x0
+	movwf	t4_
+	movf	t4_,w
+	nop
+	movwf	b2_
+label2:
+	movlw	0x1
+	xorwf	a3,w
+	movwf	t5_
+	movf	t5_,w
+	btfsc	0x3,2
+	goto	label3
+	movf	b2_,w
+	nop
+	movwf	a3_
+	goto	label4
+label3:
+	movlw	0x1
+	movwf	a3_
+label4:
+	movlw	0x1
+	nop
+	movwf	t6_
+	movf	t6_,w
+	btfsc	0x3,2
+	goto	label5
+	comf	a3,w
+	movwf	t7_
+	movf	b2_,w
+	sublw	0x0
+	movwf	t8_
+	movf	t8_,w
+	subwf	t7_,w
+	movwf	b2_
+label5:
+	movf	a2_,w
+	andwf	a3,w
+	movwf	t9_
+	movf	t9_,w
+	btfsc	0x3,2
+	goto	label6
+	comf	0x2
+	movwf	t11_
+	movf	t11_,w
+	addlw	0x3
+	movwf	t11_
+	movf	b2_,w
+	nop
+	movwf	t12_
+	movf	t12_,w
+	nop
+	movwf	ab1_
+	goto	label7
+label6:
+	movlw	0x2
+	sublw	0x3
+	movwf	t13_
+	movlw	0x2
+	sublw	0x3
+	movwf	t14_
+	movf	t14_,w
+	nop
+	movwf	ab1_
+label7:
+	movlw	0x1
+	andwf	a3,w
+	movwf	t15_
+	movf	t15_,w
+	btfsc	0x3,2
+	goto	label10
+	movlw	0x1
+	iorwf	b2,w
+	movwf	t16_
+	movf	t16_,w
+	btfsc	0x3,2
+	goto	label8
+	movlw	0x2
+	addlw	0x3
+	movwf	a3_
+	goto	label9
+label8:
+	movlw	0x3
+	sublw	0x0
+	movwf	t17_
+	movlw	0x2
+	sublw	0x0
+	movwf	t18_
+	movf	t18_,w
+	nop
+	movwf	b2_
+label9:
+label10:
+	goto	mloop
+; only standard library function
+printf:			
+	movwf	PORTB	; output w to standard output (stdout)
+	return
+	end		; end of program code
+symbol table: 
+index: 1 identifier: a3 length: 3 specifier:  
+index: 2 constant: 0x01 length: 5 format: hexadecimal
+index: 3 constant: 3 length: 2 format: decimal
+index: 4 constant: 2 length: 2 format: decimal
+index: 5 identifier: b2 length: 3 specifier:  
+index: 6 identifier: a2 length: 3 specifier:  
+index: 7 identifier: ab1 length: 4 specifier:  

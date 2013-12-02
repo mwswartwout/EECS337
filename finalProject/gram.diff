@@ -1,0 +1,208 @@
+31c31
+< %start file
+---
+> %start code
+33a34,46
+> code	: file
+> 	{
+> #ifdef	YYDEBUG
+> 		if( IS_FLAGS_DEBUG( data.flags))
+> 		{
+> 			printf( "Debug: yacc tuples\n");
+> 			print_tuple_list( $1.tuple);
+> 		}
+> #endif
+> 		code_generator_pic16f1827( $1.tuple);
+> 	}
+> 	;
+> 
+35a49,51
+> 	{
+> 		$$.tuple = tuple_primary_expr_identifier( $1.tuple);
+> 	}
+36a53,55
+> 	{
+> 		$$.tuple = tuple_primary_expr_constant( $1.tuple);
+> 	}
+37a57,59
+> 	{
+> 		$$.tuple = tuple_primary_expr_string_literal( $1.tuple);
+> 	}
+38a61,63
+> 	{
+> 		$$ = $2;	/* C allows struct to struct copy */
+> 	}
+44a70,72
+> 	{
+> 		$$.tuple = tuple_postfix_expr( $1.tuple, 0);
+> 	}
+45a74,76
+> 	{
+> 		$$.tuple = tuple_postfix_expr( $1.tuple, $3.tuple);
+> 	}
+54a86,88
+> 	{
+> 		$$.tuple = tuple_tail_to_head( $1.tuple, $3.tuple);
+> 	}
+89a124,126
+> 	{
+> 		$$.tuple = tuple_additive_expr( I_ADD, $1.tuple, $3.tuple);
+> 	}
+90a128,130
+> 	{
+> 		$$.tuple = tuple_additive_expr( I_SUB, $1.tuple, $3.tuple);
+> 	}
+109a150,152
+> 	{
+> 		$$.tuple = tuple_additive_expr( I_SUB, $1.tuple, $3.tuple);
+> 	}
+115a159,161
+> 	{
+> 		$$.tuple = tuple_and_expr( I_AND, $1.tuple, $3.tuple);
+> 	}
+145a192,194
+> 	{
+> 		$$.tuple = tuple_assignment_expr( $1.tuple, $2.token, $3.tuple);
+> 	}
+172a222,224
+> 	{
+> 		$$.tuple = 0;
+> 	}
+173a226,229
+> 	{
+> 		$$.tuple = symbol_declaration( $1.token, $2.tuple);
+> 		$$.tuple = tuple_declaration( $1.token, $$.tuple);
+> 	}
+177a234,236
+> 	{
+> 		$$.token = audit_declaration_specifiers( $1.token, 0);
+> 	}
+178a238,240
+> 	{
+> 		$$.token = audit_declaration_specifiers( $1.token, $2.token);
+> 	}
+179a242,244
+> 	{
+> 		$$.token = audit_declaration_specifiers( $1.token, 0);
+> 	}
+180a246,248
+> 	{
+> 		$$.token = audit_declaration_specifiers( $1.token, $2.token);
+> 	}
+185a254,256
+> 	{
+> 		$$.tuple = symbol_init_declarator_list( $1.tuple, $3.tuple);
+> 	}
+190a262,264
+> 	{
+> 		$$.tuple = symbol_init_declarator( $1.tuple, $3.tuple);
+> 	}
+267a342,344
+> 	{
+> 		$$ = $2;
+> 	}
+272a350,352
+> 	{
+> 		$$ = $2;
+> 	}
+276a357,359
+> 	{
+> 		$$.tuple = tuple_tail_to_head( $1.tuple, $3.tuple);
+> 	}
+277a361,363
+> 	{
+> 		$$.tuple = tuple_tail_to_head( $1.tuple, $3.tuple);
+> 	}
+308a395,397
+> 	{
+> 		$$.tuple = tuple_parameter_list( $1.tuple, 0);
+> 	}
+309a399,401
+> 	{
+> 		$$.tuple = tuple_parameter_list( $1.tuple, $3.tuple);
+> 	}
+313a406,408
+> 	{
+> 		$$ = $2;
+> 	}
+365a461,474
+> left_bracket
+> 	: '{' 
+> 	{
+> 		symbol_left_bracket();
+> 	}
+> 	;
+> 
+> right_bracket
+> 	: '}'
+> 	{
+> 		symbol_right_bracket();
+> 	}
+> 	;
+> 
+367,370c476,491
+< 	: '{' '}'
+< 	| '{' statement_list '}'
+< 	| '{' declaration_list '}'
+< 	| '{' declaration_list statement_list '}'
+---
+> 	: left_bracket right_bracket
+> 	{
+> 		$$.tuple = 0;
+> 	}
+> 	| left_bracket statement_list right_bracket
+> 	{
+> 		$$.tuple = $2.tuple;
+> 	}
+> 	| left_bracket declaration_list right_bracket
+> 	{
+> 		$$.tuple = $2.tuple;
+> 	}
+> 	| left_bracket declaration_list statement_list right_bracket
+> 	{
+> 		$$.tuple = tuple_tail_to_head( $2.tuple, $3.tuple);
+> 	}
+375a497,499
+> 	{
+> 		$$.tuple = tuple_tail_to_head( $1.tuple, $2.tuple);
+> 	}
+380a505,507
+> 	{
+> 		$$.tuple = tuple_tail_to_head( $1.tuple, $2.tuple);
+> 	}
+389a517,519
+> 	{
+> 		$$.tuple = tuple_selection_statement( $3.tuple, $5.tuple, 0);
+> 	}
+390a521,523
+> 	{
+> 		$$.tuple = tuple_selection_statement( $3.tuple, $5.tuple, $7.tuple);
+> 	}
+395a529,531
+> 	{
+> 		$$.tuple = tuple_iteration_statement( $3.tuple, $5.tuple);
+> 	}
+411a548,550
+> 	{
+> 		$$.tuple = new_tuple( I_RETURN, 0, 0, MASK_INSTR, 0, 0);
+> 	}
+412a552,554
+> 	{
+> 		$$.tuple = tuple_jump_statement( $2.tuple);
+> 	}
+417a560,562
+> 	{
+> 		$$.tuple = tuple_tail_to_head( $1.tuple, $2.tuple);
+> 	}
+426a572,574
+> 	{
+> 		$$.tuple = tuple_function_definition( 0, $1.tuple, $2.tuple);
+> 	}
+427a576,578
+> 	{
+> 		$$.tuple = tuple_function_definition( $1.token, $2.tuple, $3.tuple);
+> 	}
+432a584,586
+> 	{
+> 		$$.tuple = tuple_tail_to_head( $1.tuple, $2.tuple);
+> 	}

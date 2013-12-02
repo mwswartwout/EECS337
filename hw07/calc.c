@@ -5,7 +5,7 @@
 * DESC:		EECS 337 Assignment 6
 *      		main program for the Calculator page 295-296
 *
-* AUTHOR:	mws85
+* AUTHOR:	caseid
 *
 * DATE:		October 8, 2013
 *
@@ -28,7 +28,7 @@ int	main( int argc, char *argv[])
  *	print start of test time
  */
 	time( &t);
-	fprintf( stdout, "for mws85 start time: %s", ctime( &t));
+	fprintf( stdout, "for caseid start time: %s", ctime( &t));
 /*
  *	check command line
  */

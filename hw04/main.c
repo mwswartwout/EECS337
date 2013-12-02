@@ -4,11 +4,13 @@
 *
 * DESC:		EECS 337 Assignment 3
 *
-* AUTHOR:	mws85
+* AUTHOR:	caseid
 *
-* DATE:		September 17, 2013
+* DATE:		September 10, 2013
 *
 * EDIT HISTORY:	
+*
+*	Updated for Assignment 4 September 17, 2013
 *
 *******************************************************************************/
 #include	"yystype.h"
@@ -32,16 +34,24 @@ int	main_init( void)
  */
 int	main_exit( void)
 {
-	/*
-	*	print the attribute table
-	*/
-	
-	#ifdef YYDEBUG
-		if( IS_FLAGS_SYMBOL( data.flags))
-		{
-			print_attribute_table();
-		}
-	#endif
+/*
+ *	print the attribute table 
+ */
+#ifdef	YYDEBUG
+	if( IS_FLAGS_SYMBOL( data.flags))
+	{
+		print_attribute_table();
+	}
+#endif
+/*
+ *	free the attribute table 
+ */
+	free_attribute_table();
+/*
+ *	check for a memory leak
+ */
+	if( data.memory)
+		fprintf( stderr, "Error: memory leak: %d\n", data.memory);
 	return 0;
 }
 
@@ -65,14 +75,14 @@ void	main_process_flags( char *command)
 			CLR_FLAGS_DEBUG( data.flags);
 			return;
 		}
-		else if( !strncmp( command, "-yydebug", strlen( command)))
-		{
-			yydebug = 0;
-			return;
-		}
 		else if( !strncmp( command, "-symbol", strlen( command)))
 		{
 			CLR_FLAGS_SYMBOL( data.flags);
+			return;
+		}
+		else if( !strncmp( command, "-yydebug", strlen( command)))
+		{
+			yydebug = 0;
 			return;
 		}
 		break;
@@ -87,14 +97,14 @@ void	main_process_flags( char *command)
 			SET_FLAGS_DEBUG( data.flags);
 			return;
 		}
+		else if( !strncmp( command, "+symbol", strlen( command)))
+		{
+			SET_FLAGS_SYMBOL( data.flags);
+			return;
+		}
 		else if( !strncmp( command, "+yydebug", strlen( command)))
 		{
 			yydebug = 1;
-			return;
-		}
-		else if( !strncmp( command, "-symbol", strlen( command)))
-		{
-			SET_FLAGS_SYMBOL( data.flags);
 			return;
 		}
 		break;
@@ -122,7 +132,7 @@ void	main_process_flags( char *command)
 			return;
 		}
 	}
-	fprintf( stdout, "Usage: ansi_c [[+|-]echo] [[+|-]debug] [[+|-]yydebug] [[+|-]symbol] [filename] [...]\n");
+	fprintf( stdout, "Usage: ansi_c [[+|-]echo] [[+|-]debug] [[+|-]symbol] [[+|-]yydebug] [filename] [...]\n");
 	exit( -1);
 }
 
@@ -137,7 +147,7 @@ int	main( int argc, char *argv[])
  *	print start of test time
  */
 	time( &t);
-	fprintf( stdout, "for mws85  start time: %s", ctime( &t));
+	fprintf( stdout, "for caseid start time: %s", ctime( &t));
 /*
  *	initialize or constructor, init
  */

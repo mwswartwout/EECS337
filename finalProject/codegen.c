@@ -2,15 +2,17 @@
 *
 * FILE:		codegen.c
 *
-* DESC:		EECS 337 Assignment 12
+* DESC:		EECS 337 Project
 *
 * AUTHOR:	caseid
 *
-* DATE:		November 26, 2013
+* DATE:		December 5, 2013
 *
 * EDIT HISTORY:	
 *
 *******************************************************************************/
+#include	"yystype.h"
+
 /*******************************************************************************
  *
  *	pic memory routines
@@ -37,217 +39,42 @@
  */
 int	get_address( int size)
 {
+	int address;
 /*
  *	check if this is the very first call
  */
 	if( ! data.address)
 	    data.address = TOP_MEMORY;
 /* 
- *	get the next PIC physical address
+ *	pop the next PIC physical address
  */
 	if( data.address + size > BOTTOM_MEMORY)
 	{
-	  fprintf( stderr, "Error: PIC address allocation failure: 0X%x size: %d\n", data.address, size);
+		fprintf( stderr, "Error: PIC address allocation failure: 0X%x size: %d\n", data.address, size);
 		data.errors++;
 		return( 0);
 	}
-	return( data.address++);	/* at top of memory go down */
+	address = data.address;
+	data.address += size;	/* at top of memory go down */
+	return( address);	
 }
 
-/*******************************************************************************
- *
- *	pic instruction table 
- *
- ******************************************************************************/
-char	*instr_table[] =
-{
-	"label", "mov", "add", "and", "ior", "sub", "xor", "comf",
-	"decf", "decfsz", "incf", "incfsz", "rlf", "rrf", "swapf",
-	"bcf", "bsf", "btfsc", "btfss", "call", "goto", "tris", "clr",
-	"retlw", "clrwdt", "nop", "option", "retfie", "return",
-	"sleep",
-};
-
-/*******************************************************************************
- *
- *	dynamic memory routines
- *
- ******************************************************************************/
 /*
- *	allocate buffer memory routine
+ *	put an address back onto the static memory
  */
-char	*new_buffer( char *text, int length)
+int	put_address( int address, int size)
 {
-	char	*buffer = 0;
-
-	if( 0 < length)
+/* 
+ *	push the previous PIC physical address
+ */
+	if( data.address - size < TOP_MEMORY || data.address != address + size)
 	{
-		if( !( buffer = (char*)malloc( length)))
-			new_error( length);
-		else
-		{
-/*
- *	initialize the buffer to zero and copy in text
- */
-			memset( (void *)buffer, 0, (size_t)length);
-			strncpy( buffer, text, length);
-			data.memory += length;
-		}
+		fprintf( stderr, "Error: address deallocation failure: 0X%x size: %d\n", address, size);
+		data.errors++;
+		return( 0);
 	}
-	return( buffer);
-}
-
-/*
- *	deallocate buffer memory routine
- */
-void	free_buffer( char *buffer, int length)
-{
-	if( 0 < length)
-	{
-		free( buffer);
-		data.memory -= length;
-	}
-	return;
-}
-
-/*
- *	allocate a tuple data structure
- */
-TUPLE	*new_tuple( int token, unsigned char value, int address, int mask, char *buffer, int length)
-{
-	TUPLE *tuple;
-
-	if( !(tuple = ( TUPLE*)malloc( sizeof( TUPLE))))
-		new_error( sizeof( TUPLE));
-	else
-	{
-		memset( (void *)tuple, 0, (size_t)sizeof( TUPLE));
-		tuple->token = token;
-		tuple->value = value;
-		tuple->address = address;
-		tuple->mask = mask;
-		if( 0 < length)
-		{
-			tuple->length = length;
-			tuple->buffer = new_buffer( buffer, length);
-		}
-		data.memory += sizeof( TUPLE);
-	}
-	return( tuple);
-}
-
-/*
- *	deallocate a tuple data structure
- */
-void	free_tuple( TUPLE *tuple)
-{
-	if( tuple)
-	{
-		free_buffer( tuple->buffer, tuple->length);
-		free( tuple);
-		data.memory -= sizeof( TUPLE);
-	}
-	return;
-}
-
-/*
- *	deallocate a tuple linked list
- */
-void	free_tuple_list( TUPLE *tuple)
-{
-	TUPLE	*tuple_next;
-/*
- *	deallocate the tuple linked list structure
- */
-	while( tuple)
-	{
-		tuple_next = tuple->next;
-		free_tuple( tuple);
-		tuple = tuple_next;
-	}
-	return;
-}
-
-/*
- *	find the last tuple structure in linked list
- */
-TUPLE	*end_tuple_list( TUPLE *tuple)
-{
-	if( tuple)
-		while( tuple->next)
-			tuple = tuple->next;
-	return tuple;
-}
-
-/*
- *	link the tail of first linked list to second linked list
- */
-TUPLE	*tuple_tail_to_head( TUPLE *head1, TUPLE *head2)
-{
-	TUPLE	*lists;
-/*
- *	check if head1 exist else return head2
- */
-	if( head1)
-	{
-		lists = end_tuple_list( head1);
-		lists->next = head2;
-		return( head1);
-	}
-	return( head2);
-}
-
-/*
- *	print a tuple structure
- */
-void	print_tuple( TUPLE *tuple)
-{
-	if( tuple)
-	{
-		printf( "next: %p ", tuple->next);
-		printf( "instr: %s ", instr_table[ tuple->token % I_SLEEP]);
-		printf( "value: %x ", tuple->value);
-		printf( "address: %x ", tuple->address);
-		printf( "mask: %x ", tuple->mask);
-		if( tuple->mask)
-		{
-			if( tuple->mask & MASK_VALUE)
-				printf( "MASK_VALUE ");
-			if( tuple->mask & MASK_ADDRESS)
-				printf( "MASK_ADDRESS ");
-			if( tuple->mask & MASK_LABEL)
-				printf( "MASK_LABEL ");
-			if( tuple->mask & MASK_W_REG)
-				printf( "MASK_W_REG ");
-			if( tuple->mask & MASK_F_REG)
-				printf( "MASK_F_REG ");
-			if( tuple->mask & MASK_INSTR)
-				printf( "MASK_INSTR ");
-		}
-		printf( "level: %d ", tuple->level);
-		printf( "length: %d ", tuple->length);
-		if( 0 < tuple->length)
-			printf( "buffer: %s\n", tuple->buffer);
-		else
-			printf( "buffer: %p\n", tuple->buffer);
-	}
-	return;
-}
-
-/*
- *	print a tuple linked list
- */
-void	print_tuple_list( TUPLE *tuple)
-{
-/*
- *	print the tuple linked list structure
- */
-	while( tuple)
-	{
-		print_tuple( tuple);
-		tuple = tuple->next;
-	}
-	return;
+	data.address -= size;	/* at bottom of memory go up */
+	return( data.address);	
 }
 
 /*******************************************************************************
@@ -255,6 +82,52 @@ void	print_tuple_list( TUPLE *tuple)
  *	code generator routines
  *
  ******************************************************************************/
+/*
+ *	generate the symbol table and temporary address
+ *
+ *	use MYVAR1 EQU ADDRESS or let the assembler assign
+ *
+ *    CBLOCK 0x20 ; Define GPR variable register locations
+ *        MYVAR1  ; User variables allocated contiguously
+ *        MYVAR2  ; 
+ *        MYVAR3  ; 
+ *    ENDC
+ */
+void	code_generator_pic_address( void)
+{
+	TUPLE	*tuple;
+	TUPLE	*tuple2;
+/*
+ *	if address only then return
+ */
+	if( IS_FLAGS_ADDRESS( data.flags))
+	    return;
+/*
+ *	print the symbol table information
+ */
+	printf( ";symbol table:\n");
+	for( tuple = data.symbol_table; tuple; tuple = tuple->next)
+	{
+		if( 0 < tuple->level)
+		    printf( "%s_%d EQU 0x%x\n", tuple->buffer, tuple->level, tuple->address);
+		else if( tuple->length <= 2)		/* assembler does not like one letter labels */
+		    printf( "%s_ EQU 0x%x\n", tuple->buffer, tuple->address);
+		else
+		    printf( "%s EQU 0x%x\n", tuple->buffer, tuple->address);
+	}
+	printf( ";symbol table free:\n");
+	for( tuple = data.symbol_table_free; tuple; tuple = tuple->next)
+	{
+		if( 0 < tuple->level)
+		    printf( "%s_%d EQU 0x%x\n", tuple->buffer, tuple->level, tuple->address);
+		else if( tuple->length <= 2)		/* assembler does not like one letter labels */
+		    printf( "%s_ EQU 0x%x\n", tuple->buffer, tuple->address);
+		else
+		    printf( "%s EQU 0x%x\n", tuple->buffer, tuple->address);
+	}
+	return;
+}
+
 /*
  *	generate the pic header information
  */
@@ -265,7 +138,7 @@ void	code_generator_pic_prefix( void)
  */
 	printf( "; automatic code generation for PIC16F1827\n");
 	printf( "; EECS337 Compiler Design\n");
-	printf( "; by: mws85, date: Fall 2013\n");
+	printf( "; by: caseid, date: Fall 2013\n");
 	printf( "; for PIC16F1827 processor\n");
 	printf( "; CPU configuration\n");
 	printf( "	list		p=16f1827      ; list directive to define processor\n");
@@ -296,23 +169,18 @@ void	code_generator_pic_prefix( void)
 	printf( "	clrf	TRISB		; set PORTB to all outputs\n");
 	printf( "	movlb	0	; switch to bank 0 memory\n");
 /*
- *	generate the symbol table initialization code
- */
-//	code_generator_pic_address_init();
-/*
  *	generate the PIC assember mloop header code
  */
 	printf( "mloop:\n");
-	printf( "; read from the standard input (stdin)\n");
-	printf( "	movf	PORTA,w\n");
+	printf( "; here begins the main program\n");
 }
 
 /*
- *	generate the pic mloop tail code and standard library
+ *	generate the pic tail information
  */
 void	code_generator_pic_postfix( void)
 {
-	printf( "	goto	mloop\n");
+	printf( "	return	; if main does not have a return\n");
 	printf( "; only standard library function\n");
 	printf( "printf:			\n");
 	printf( "	movwf	PORTB	; output w to standard output (stdout)\n");
@@ -340,7 +208,7 @@ void	code_generator_operand_postfix( TUPLE *tuple)
 void	code_generator_operand( TUPLE *tuple)
 {
 	if( tuple->mask & MASK_ADDRESS)
-		printf( "0x%x", tuple->address);
+		printf( "0x%02x", tuple->address);
 	switch( tuple->token)
 	{
 	case I_BCF:
@@ -352,12 +220,14 @@ void	code_generator_operand( TUPLE *tuple)
 		break;
 	default:
 		if( tuple->mask & MASK_VALUE)
-			printf( "0x%x", tuple->value);
+			printf( "0x%02x", tuple->value);
 		break;
 	}
 	if( tuple->mask & MASK_LABEL)
-		if( tuple->length <= 2)		/* assembler does not like one letter labels */
-			printf( "%s1", tuple->buffer);
+		if( 0 < tuple->level)
+			printf( "%s_%d", tuple->buffer, tuple->level);
+		else if( tuple->length <= 2)		/* assembler does not like one letter labels */
+			printf( "%s_", tuple->buffer);
 		else
 			printf( "%s", tuple->buffer);
 	code_generator_operand_postfix( tuple);
@@ -404,7 +274,7 @@ void	code_generator_instr( TUPLE *tuple)
 	{
 	case I_LABEL:
 		if( tuple->length <= 2)		/* assembler does not like one letter labels */
-			printf( "%s1:\n", tuple->buffer);
+			printf( "%s_:\n", tuple->buffer);
 		else
 			printf( "%s:\n", tuple->buffer);
 		break;
@@ -451,6 +321,100 @@ void	code_generator_instr( TUPLE *tuple)
 }
 
 /*
+ *	post process the instruction list
+ *	insert post initialization code (goto mloop)
+ */
+TUPLE	*code_post_process_initialize( TUPLE *tuple_list)
+{
+	TUPLE *tuple = 0;
+	TUPLE *lists;
+	TUPLE *tuple_next;
+/*
+ *	create the instructions based on the main flag
+ */
+	if( IS_FLAGS_MAIN( data.flags))
+	{
+		tuple = new_tuple( I_MOV, 0, 0, MASK_LABEL | MASK_W_REG, "PORTA", sizeof( "PORTA") + 1);	/* read from stdin */
+		tuple->next = new_tuple( I_CALL, 0, 0, MASK_LABEL, "main", sizeof( "main") + 1);		/* call main */
+	}
+	lists = new_tuple( I_GOTO, 0, 0, MASK_LABEL, "mloop", sizeof( "mloop") + 1);			/* goto mloop */
+	tuple = tuple_tail_to_head( tuple, lists);
+/*
+ *	check if no declaration or just function body
+ */
+	if( ! tuple_list || tuple_list->token == I_LABEL)
+	{
+		tuple = tuple_tail_to_head( tuple, tuple_list);
+		return( tuple);
+	}
+/*
+ *	check if declaration list [ function body ]
+ */
+	for( lists = tuple_list; lists; lists = lists->next)
+	{
+		if( ! lists->next || lists->next->token == I_LABEL)	/* start of function body */
+		{
+			tuple_next = lists->next;
+			lists->next = tuple;
+			tuple_list = tuple_tail_to_head( tuple_list, tuple_next);
+			return( tuple_list);
+		}
+	}
+	return( tuple_list);
+}
+
+/*
+ *	post process the instruction list
+ *	insert RETURNs for subroutines without returns
+ */
+TUPLE	*code_post_process_return( TUPLE *tuple_list)
+{
+	TUPLE *lists;
+	TUPLE *tuple_next;
+/*
+ *	check if return, function body
+ */
+	for( lists = tuple_list; lists; lists = lists->next)
+	{
+		switch( lists->token)
+		{
+		case I_RETURN:
+		case I_RETFIE:
+		case I_RETLW:
+			break;
+		default:
+			if( lists->next && lists->next->token == I_LABEL && ! lists->next->value)	/* start of function body */
+			{
+				tuple_next = lists->next;
+				lists->next = new_tuple( I_RETURN, 0, 0, MASK_INSTR, 0, 0);
+				lists->next->next = tuple_next;
+			}
+		}
+	}
+	return( tuple_list);
+}
+
+/*
+ *	post process the instruction list
+ *	this gets messy because we have to fix lots of things
+ */
+TUPLE	*code_post_process( TUPLE *tuple_list)
+{
+/*
+ *	insert post initialization code (goto mloop)
+ */
+	tuple_list = code_post_process_initialize( tuple_list);
+/*
+ *	insert RETURNs for subroutines without returns
+ */
+	tuple_list = code_post_process_return( tuple_list);
+/*
+ *	return fixed tuple instruction list
+ */
+	return( tuple_list);
+}
+
+/*
  *	code generator for the pic16f1827 processor
 		code_generator_pic16f1827( $1.tuple);
  */
@@ -458,11 +422,18 @@ void	code_generator_pic16f1827( TUPLE *tuple_list)
 {
 	TUPLE *tuple;
 /*
+ *	post process the instruction list
+ */
+	tuple_list = code_post_process( tuple_list);
+/*
  *	debug tuple list
  */
 #ifdef	YYDEBUG
 	if( IS_FLAGS_DEBUG( data.flags))
+	{
+		printf( "Debug: code tuples\n");
 		print_tuple_list( tuple_list);
+	}
 #endif
 /*
  *	generate the header
@@ -509,7 +480,7 @@ void	code_generator_instr_test( void)
 			break;
 		case 1:
 /*    MOVF    address,W    Copy contents of address to W */
-			tuple = new_tuple( I_MOV, 0, get_address( 1), MASK_ADDRESS | MASK_W_REG, 0, 0);
+		  	tuple = new_tuple( I_MOV, 0, get_address( 1), MASK_ADDRESS | MASK_W_REG, 0, 0);
 			break;
 		case 2:
 /*    MOVF    address,F    Copy contents of address to itself (not useless; sets Z flag if zero) */

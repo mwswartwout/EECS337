@@ -2,17 +2,19 @@
 *
 * FILE:		gram.y
 *
-* DESC:		EECS 337 Assignment 3
+* DESC:		EECS 337 Project
 *
-* AUTHOR:       caseid
+* AUTHOR:	caseid
 *
-* DATE:		September 10, 2013
+* DATE:		December 5, 2013
 *
 * EDIT HISTORY:	
 *
 *******************************************************************************/
 %{
-#include	"yystype.h"
+#include "yystype.h"
+#include "y.tab.h"
+
 %}
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
@@ -438,5 +440,6 @@ identifier
 void	yyerror( char *s)
 {
 	fflush(stdout);
+	printf("line: %d\n%s\n", data.line, data.string);
 	printf("\n%*s\n%*s\n", data.column, "^", data.column, s);
 }
