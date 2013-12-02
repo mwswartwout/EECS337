@@ -34,14 +34,14 @@ IS			(u|U|l|L)*
 "break"			{ count(); yylval.token = BREAK; return(BREAK); }
 "case"			{ count(); yylval.token = CASE; return(CASE); }
 "char"			{ count(); yylval.token = CHAR; return(CHAR); }
-"const"			{ count(); yylval.token = CONST: return(CONST); }
+"const"			{ count(); yylval.token = CONST; return(CONST); }
 "continue"		{ count(); yylval.token = CONTINUE; return(CONTINUE); }
 "default"		{ count(); yylval.token = DEFAULT; return(DEFAULT); }
 "do"			{ count(); yylval.token = DO; return(DO); }
 "double"		{ count(); yylval.token = DOUBLE; return(DOUBLE); }
 "else"			{ count(); yylval.token = ELSE; return(ELSE); }
 "enum"			{ count(); yylval.token = ENUM; return(ENUM); }
-"extern"		{ count(); yylval.token = EXTERN; return(EXTERN; }
+"extern"		{ count(); yylval.token = EXTERN; return(EXTERN); }
 "float"			{ count(); yylval.token = FLOAT; return(FLOAT); }
 "for"			{ count(); yylval.token = FOR; return(FOR); }
 "goto"			{ count(); yylval.token = GOTO; return(GOTO); }
@@ -57,7 +57,7 @@ IS			(u|U|l|L)*
 "struct"		{ count(); yylval.token = STRUCT; return(STRUCT); }
 "switch"		{ count(); yylval.token = SWITCH; return(SWITCH); }
 "typedef"		{ count(); yylval.token = TYPEDEF; return(TYPEDEF); }
-"union"			{ count(); yylval.token = UNION: return(UNION); }
+"union"			{ count(); yylval.token = UNION; return(UNION); }
 "unsigned"		{ count(); yylval.token = UNSIGNED; return(UNSIGNED); }
 "void"			{ count(); yylval.token = VOID; return(VOID); }
 "volatile"		{ count(); yylval.token = VOLATILE; return(VOLATILE); }
@@ -67,11 +67,11 @@ IS			(u|U|l|L)*
 0[xX]{H}+{IS}?		{ count(); yylval.tuple = constant_hex( yytext, yyleng); return(CONSTANT); }
 0{D}+{IS}?		{ count(); yylval.tuple = constant_octal( yytext, yyleng); return(CONSTANT); }
 {D}+{IS}?		{ count(); yylval.tuple = constant_decimal( yytext, yyleng); return(CONSTANT); }
-'(\\.|[^\\'])+'		{ count(); yylval.tuple = consant_char( yytext, yyleng); return(CONSTANT); }
+'(\\.|[^\\'])+'		{ count(); yylval.tuple = constant_char( yytext, yyleng); return(CONSTANT); }
 {D}+{E}{FS}?		{ count(); yylval.tuple = constant_float( yytext, yyleng); return(CONSTANT); }
 {D}*"."{D}+({E})?{FS}?	{ count(); yylval.tuple = constant_float( yytext, yyleng); return(CONSTANT); }
 {D}+"."{D}*({E})?{FS}?	{ count(); yylval.tuple = constant_float( yytext, yyleng); return(CONSTANT); }
-\"(\\.|[^\\"])*\"	{ count(); yylval.tuple = constant_string_literal( yytext, yyleng); return(STRING_LITERAL); }
+\"(\\.|[^\\"])*\"	{ count(); yylval.tuple = string_literal( yytext, yyleng); return(STRING_LITERAL); }
 
 ">>="			{ count(); yylval.token = RIGHT_ASSIGN; return(RIGHT_ASSIGN); }
 "<<="			{ count(); yylval.token = LEFT_ASSIGN; return(LEFT_ASSIGN); }
@@ -86,7 +86,7 @@ IS			(u|U|l|L)*
 "<<"			{ count(); yylval.token = LEFT_OP; return(LEFT_OP); }
 "++"			{ count(); yylval.token = INC_OP; return(INC_OP); }
 "--"			{ count(); yylval.token = DEC_OP; return(DEC_OP); }
-"->"			{ count(); yylval.token = PRT_OP; return(PTR_OP); }
+"->"			{ count(); yylval.token = PTR_OP; return(PTR_OP); }
 "&&"			{ count(); yylval.token = AND_OP; return(AND_OP); }
 "||"			{ count(); yylval.token = OR_OP; return(OR_OP); }
 "<="			{ count(); yylval.token = LE_OP; return(LE_OP); }

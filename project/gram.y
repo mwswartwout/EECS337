@@ -175,9 +175,21 @@ declaration
 
 declaration_specifiers
 	: storage_class_specifier
+	{
+		$$.token = audit_declaration_specifiers( $1.token, 0);
+	}
 	| storage_class_specifier declaration_specifiers
+	{
+		$$.token = audit_declaration_specifiers( $1.token, $2.token);
+	}
 	| type_specifier
+	{
+		$$.token = audit_declaration_specifiers( $1.token, 0);
+	}	
 	| type_specifier declaration_specifiers
+	{
+		$$.token = audit_declaration_specifiers( $1.token, $2.token);
+	}
 	;
 
 init_declarator_list
