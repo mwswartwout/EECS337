@@ -51,6 +51,11 @@
 #define I_RETFIE	27
 #define I_RETURN	28
 #define I_SLEEP		29
+#define I_ARSF		30
+#define I_LSLF		31
+#define	I_LSRF		32
+#define I_BR		33
+#define I_RESET		34
 /*
  *	define a tuple structure
  *	supports: CONSTANT STRING_LITERAL IDENTIFIER types
@@ -61,6 +66,8 @@ TUPLE
 	TUPLE		*next;
 	int		token;
 	unsigned char	value;
+#define FSR0	0x81
+#define FSR1	0x82	
 	int		address;
 #define	MASK_VALUE	0x0001
 #define	MASK_ADDRESS	0x0002
@@ -69,6 +76,18 @@ TUPLE
 #define	MASK_F_REG	0x0010
 #define	MASK_INSTR	0x0020
 #define	MASK_PRINT	0x0040
+#define MASK_WFC	0x0080
+#define MASK_WFB	0x0100
+#define MASK_FSR	0x0200
+#define MASK_LP		0x0400
+#define MASK_LB		0x0800
+#define MASK_IW		0x1000
+#define MASK_WI		0x2000
+#define MASK_INDIRECT 0x4000
+#define PREINCREMENT 0b00
+#define PREDECREMENT 0b01
+#define POSTINCREMENT 0b10
+#define POSTDECREMENT 0b11
 	int		mask;
 	char		*buffer;
 	int		length;

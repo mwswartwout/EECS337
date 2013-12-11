@@ -4,7 +4,7 @@
 *
 * DESC:		EECS 337 Project
 *
-* AUTHOR:	caseid
+* AUTHOR:	mws85
 *
 * DATE:		December 5, 2013
 *
@@ -28,21 +28,54 @@
 
 %token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
 
-%start file
+%start code
+
 %%
+code
+	: file
+	{
+	#ifdef	YYDEBUG
+		if( IS_FLAGS_DEBUG( data.flags))
+		{
+			printf( "Debug: yacc tuples\n");
+			print_tuple_list( $1.tuple);
+		}
+	#endif
+		
+	code_generator_pic16f1827( $1.tuple);
+	}
+	;
 
 primary_expr
 	: identifier
+	{
+		$$.tuple = tuple_primary_expr_identifier( $1.tuple);
+	}
 	| CONSTANT
+	{
+		$$.tuple = tuple_primary_expr_constant( $1.tuple);
+	}
 	| STRING_LITERAL
+	{
+		$$.tuple = tuple_primary_expr_string_literal( $1.tuple);
+	}
 	| '(' expr ')'
+	{
+		$$ = $2;
+	}
 	;
 
 postfix_expr
 	: primary_expr
 	| postfix_expr '[' expr ']'
 	| postfix_expr '(' ')'
+	{
+		$$.tuple = tuple_postfix_expr( $1.tuple ,0);
+	}
 	| postfix_expr '(' argument_expr_list ')'
+	{
+		$$.tuple = tuple_postfix_expr( $1.tuple, $3.tuple);
+	}
 	| postfix_expr '.' identifier
 	| postfix_expr PTR_OP identifier
 	| postfix_expr INC_OP
@@ -52,6 +85,9 @@ postfix_expr
 argument_expr_list
 	: assignment_expr
 	| argument_expr_list ',' assignment_expr
+	{
+		$$.tuple = tuple_tail_to_head($1.tuple, $3.tuple);
+	}
 	;
 
 unary_expr
@@ -87,6 +123,9 @@ multiplicative_expr
 additive_expr
 	: multiplicative_expr
 	| additive_expr '+' multiplicative_expr
+	{
+		$$.tuple = tuple_additive_expr( I_ADD, $1.tuple, $3.tuple);
+	}
 	| additive_expr '-' multiplicative_expr
 	;
 
@@ -143,6 +182,9 @@ conditional_expr
 assignment_expr
 	: conditional_expr
 	| unary_expr assignment_operator assignment_expr
+	{
+		$$.tuple = tuple_assignment_expr( $1.tuple, $2.token, $3.tuple);
+	}
 	;
 
 assignment_operator
@@ -170,7 +212,14 @@ constant_expr
 
 declaration
 	: declaration_specifiers ';'
+	{
+		$$.tuple = 0;
+	}
 	| declaration_specifiers init_declarator_list ';'
+	{
+		$$.tuple = symbol_declaration( $1.token, $2.tuple);
+		$$.tuple = tuple_declaration( $1.token, $$.tuple);
+	}
 	;
 
 declaration_specifiers
@@ -195,11 +244,17 @@ declaration_specifiers
 init_declarator_list
 	: init_declarator
 	| init_declarator_list ',' init_declarator
+	{
+		$$.tuple = symbol_init_declarator( $1.tuple, $3.tuple);
+	}
 	;
 
 init_declarator
 	: declarator
 	| declarator '=' initializer
+	{
+		$$.tuple = symbol_init_declarator( $1.tuple, $3.tuple);
+	}
 	;
 
 storage_class_specifier
@@ -277,16 +332,28 @@ enumerator
 declarator
 	: declarator2
 	| pointer declarator2
+	{
+		$$ = $2;
+	}
 	;
 
 declarator2
 	: identifier
 	| '(' declarator ')'
+	{
+		$$ = $2;
+	}
 	| declarator2 '[' ']'
 	| declarator2 '[' constant_expr ']'
 	| declarator2 '(' ')'
 	| declarator2 '(' parameter_type_list ')'
+	{
+		$$.tuple = tuple_tail_to_head( $1.tuple, $3.tuple);
+	}
 	| declarator2 '(' parameter_identifier_list ')'
+	{
+		$$.tuple = tuple_tail_to_head( $1.tuple, $3.tuple);
+	}
 	;
 
 pointer
@@ -318,11 +385,20 @@ parameter_type_list
 
 parameter_list
 	: parameter_declaration
+	{
+		$$.tuple = tuple_parameter_list( $1.tuple, 0);
+	}
 	| parameter_list ',' parameter_declaration
+	{
+		$$.tuple = tuple_parameter_list( $1.tuple, $3.tuple);
+	}
 	;
 
 parameter_declaration
 	: type_specifier_list declarator
+	{
+		$$ = $2;
+	}
 	| type_name
 	;
 
@@ -375,21 +451,53 @@ labeled_statement
 	| DEFAULT ':' statement
 	;
 
-compound_statement
-	: '{' '}'
-	| '{' statement_list '}'
-	| '{' declaration_list '}'
-	| '{' declaration_list statement_list '}'
+left_bracket
+	: '{'
+	{
+		symbol_left_bracket();
+	}
+	;
+
+right_bracket
+	: '}'
+	{
+		symbol_right_bracket();
+	}
+	;
+
+compound_statement	
+	: left_bracket right_bracket
+	{
+		$$.tuple = 0;
+	}
+	| left_bracket statement_list right_bracket
+	{
+		$$.tuple = $2.tuple;
+	}
+	| left_bracket declaration_list right_bracket
+	{
+		$$.tuple = $2.tuple;
+	}
+	| left_bracket declaration_list statement_list right_bracket ';'
+	{
+		$$.tuple = tuple_tail_to_head( $2.tuple, $3.tuple);
+	}
 	;
 
 declaration_list
 	: declaration
 	| declaration_list declaration
+	{
+		$$.tuple = tuple_tail_to_head( $1.tuple, $2.tuple);
+	}
 	;
 
 statement_list
 	: statement
 	| statement_list statement
+	{
+		$$.tuple = tuple_tail_to_head( $1.tuple, $2.tuple);
+	}
 	;
 
 expression_statement
@@ -421,7 +529,13 @@ jump_statement
 	| CONTINUE ';'
 	| BREAK ';'
 	| RETURN ';'
+	{
+		$$.tuple = new_tuple( I_RETURN, 0, 0, MASK_INSTR, 0, 0);
+	}
 	| RETURN expr ';'
+	{
+		$$.tuple = tuple_jump_statement( $2.tuple);
+	}
 	;
 
 file
@@ -436,12 +550,21 @@ external_definition
 
 function_definition
 	: declarator function_body
+	{
+		$$.tuple = tuple_function_definition( 0, $1.tuple, $2.tuple);
+	}
 	| declaration_specifiers declarator function_body
+	{
+		$$.tuple = tuple_function_definition( $1.token, $2.tuple, $3.tuple);
+	}
 	;
 
 function_body
 	: compound_statement
 	| declaration_list compound_statement
+	{
+		$$.tuple = tuple_tail_to_head( $1.tuple, $2.tuple);
+	}
 	;
 
 identifier

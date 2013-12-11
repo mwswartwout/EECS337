@@ -4,21 +4,14 @@
 *
 * DESC:		EECS 337 Project
 *
-* AUTHOR:	caseid
+* AUTHOR:	mws85
 *
 * DATE:		December 5, 2013
-*
-* EDIT HISTORY:	
-*
 *******************************************************************************/
 #include	"yystype.h"
-
 /*******************************************************************************
- *
  *	pic memory routines
- *
  *	MEMORY REGISTERS
- *
  *	+---------------+
  *	| TOP_MEMORY	| 0X20
  *	+---------------+
@@ -32,7 +25,6 @@
  *	+---------------+
  *	| BOTTOM_MEMORY	| 0X7F
  *	+---------------+
- *
  ******************************************************************************/
 /*
  *	get an address off the top of memory
@@ -138,7 +130,7 @@ void	code_generator_pic_prefix( void)
  */
 	printf( "; automatic code generation for PIC16F1827\n");
 	printf( "; EECS337 Compiler Design\n");
-	printf( "; by: caseid, date: Fall 2013\n");
+	printf( "; by: mws85, date: Fall 2013\n");
 	printf( "; for PIC16F1827 processor\n");
 	printf( "; CPU configuration\n");
 	printf( "	list		p=16f1827      ; list directive to define processor\n");
@@ -193,7 +185,7 @@ void	code_generator_pic_postfix( void)
  */
 void	code_generator_operand_postfix( TUPLE *tuple)
 {
-	if( tuple->token != I_CLR)
+	if( tuple->token != I_CLR && tuple->token != I_CALL && tuple->token != I_BR)
 	{
 		if( tuple->mask & MASK_W_REG)
 			printf( ",w");
@@ -207,7 +199,7 @@ void	code_generator_operand_postfix( TUPLE *tuple)
  */
 void	code_generator_operand( TUPLE *tuple)
 {
-	if( tuple->mask & MASK_ADDRESS)
+	if( tuple->mask & (MASK_ADDRESS | MASK_WFC | MASK_WFB))
 		printf( "0x%02x", tuple->address);
 	switch( tuple->token)
 	{
@@ -218,6 +210,36 @@ void	code_generator_operand( TUPLE *tuple)
 		if( tuple->mask & MASK_VALUE)
 			printf( ",%d", tuple->value);
 		break;
+	case I_ADD: //Added a case for ADD commands instead of putting them in the default case
+		if (tuple->address == FSR0) //Handles ADDFSR
+			printf( "0, %d", tuple->value);
+		else if (tuple->address == FSR1) //HANDLES THE 2nd FSR 
+			printf( "1, %d", tuple->value);
+		break;
+	case I_MOV: //Added a case for MOV commands instead of putting them in the default case
+		if (tuple->mask & (MASK_IW | MASK_WI)) //Handles MOVIW and MOVWI
+		{
+			if (tuple ->mask & MASK_INDIRECT)
+				printf("%i[%i]", tuple->value, tuple-> address);
+			else 
+			{
+				switch (tuple->value) //Checks for whether it's PREINCREMENT, PREDECREMENT, POSTINCREMENT, or POSTDECREMENT
+				{
+				case PREINCREMENT:
+					printf("++%i", tuple->address);
+					break;
+				case PREDECREMENT:
+					printf("--%i", tuple->address);
+					break;
+				case POSTINCREMENT:
+					printf("%i++", tuple->address);
+					break;
+				case POSTDECREMENT:
+					printf("%i--", tuple->address);
+					break;
+				}
+			}
+		}
 	default:
 		if( tuple->mask & MASK_VALUE)
 			printf( "0x%02x", tuple->value);
@@ -240,21 +262,56 @@ void	code_generator_operand( TUPLE *tuple)
  */
 void	code_generator_instr_postfix( TUPLE *tuple)
 {
+	//Prints the postfixes for the commands based on what the mask is
 	switch( tuple->token)
 	{
 	case I_MOV:
-		if( tuple->mask & MASK_VALUE)
-			printf( "lw\t");
-		else if( tuple->mask & MASK_W_REG || tuple->mask & MASK_F_REG)
-			printf( "f\t");
+		if (tuple->mask & MASK_LP)
+			printf( "lp\t"); //MOVLP
+		else if (tuple->mask & MASK_LB)
+			printf( "lb\t"); //MOVLB
+		else if( tuple->mask & MASK_VALUE)
+			printf( "lw\t"); //MOVLW
+		else if( tuple->mask & MASK_W_REG || tuple->mask & MASK_F_REG) 
+			printf( "f\t"); //MOVF
 		else
-			printf( "wf\t");
+			printf( "wf\t"); //MOVWF
 		break;
 	case I_CLR:
 		if( tuple->mask & MASK_W_REG)
-			printf( "w");
+			printf( "w"); //CLRW
 		else
 			printf( "f\t");
+		break;
+	case I_ADD:
+		if (tuple->mask & MASK_VALUE)
+			printf( "lw\t"); //ADDLW
+		else if (tuple->mask & MASK_WFC)
+			printf( "wfc\t"); //ADDWFC
+		else if (tuple->mask & MASK_ADDRESS)
+			printf( "wf\t"); //ADDWF
+		else if (tuple->mask & MASK_FSR)
+			printf( "fsr\t"); //ADDFSR
+		break;
+	case I_CALL:
+		if (tuple->mask & MASK_INSTR)
+			break;
+		else
+			printf( "w\t"); //CALLW
+		break;
+	case I_BR:
+		if (tuple->mask & MASK_LABEL)
+			printf( "a\t"); //BRA
+		else
+			printf( "w\t"); //BRW
+		break;
+	case I_SUB:
+		if (tuple->mask & MASK_VALUE)
+			printf("lw\t"); //SUBLW
+		else if (tuple->mask & MASK_WFB)
+			printf("wfb\t"); //SUBWFB
+		else
+			printf("wf\t"); //SUBWF
 		break;
 	default:
 		if( tuple->mask & MASK_VALUE)
@@ -282,9 +339,11 @@ void	code_generator_instr( TUPLE *tuple)
 	case I_ADD:
 	case I_AND:
 	case I_IOR:
+	case I_CALL:
 	case I_SUB:
 	case I_XOR:
 	case I_CLR:
+	case I_BR:
 		printf( "\t%s", instr_table[ tuple->token]);
 		code_generator_instr_postfix( tuple);
 		code_generator_operand( tuple);
@@ -297,7 +356,6 @@ void	code_generator_instr( TUPLE *tuple)
 	case I_RLF:
 	case I_RRF:
 	case I_SWAPF:
-	case I_CALL:
 	case I_GOTO:
 	case I_TRIS:
 	case I_RETLW:
@@ -305,6 +363,9 @@ void	code_generator_instr( TUPLE *tuple)
 	case I_BSF:
 	case I_BTFSC:
 	case I_BTFSS:
+	case I_ARSF:
+	case I_LSLF:
+	case I_LSRF:
 		printf( "\t%s\t", instr_table[ tuple->token]);
 		code_generator_operand( tuple);
 		break;
@@ -314,6 +375,7 @@ void	code_generator_instr( TUPLE *tuple)
 	case I_RETFIE:
 	case I_RETURN:
 	case I_SLEEP:
+	case I_RESET:
 		printf( "\t%s\n", instr_table[ tuple->token]);
 		break;
 	}
@@ -470,7 +532,7 @@ void	code_generator_instr_test( void)
  *	instruction format. The generated instruction sequence does NOT
  *	represent a meaningful program!
  */
-	for( index = 0; index <= 52; index++)
+	for( index = 0; index <=90; index++)
 	{
 		switch( index)
 		{
@@ -686,6 +748,153 @@ void	code_generator_instr_test( void)
 /*    RETLW   value        Return from subroutine, placing value into W */
 			tuple = new_tuple( I_RETLW, 0x0f, 0, MASK_VALUE, 0, 0);
 			break;
+		case 53:
+			//ADDWFC
+			tuple = new_tuple( I_ADD, 0, get_address(1), MASK_WFC | MASK_W_REG, 0, 0);
+			break;
+		case 54:
+			//ADDWFC
+			tuple = new_tuple( I_ADD, 0, get_address(1), MASK_WFC | MASK_F_REG, 0, 0);
+			break;
+		case 55:
+			//RESET
+			tuple = new_tuple( I_RESET, 0, 0, MASK_INSTR, 0, 0);
+			break;
+		case 56:
+			//CALL
+			tuple = new_tuple( I_CALL, 0, 0, MASK_W_REG, 0, 0);
+			break;
+		case 57:
+			//BRW
+			tuple = new_tuple( I_BR, 0, 0, MASK_W_REG, 0, 0);
+			break;
+		case 58:
+			//BRA
+			tuple = new_tuple( I_BR, 0, 0, MASK_LABEL, "label1", sizeof("label1") + 1);
+			break;
+		case 59:
+			//SUBWFB
+			tuple = new_tuple( I_SUB, 0, get_address(1), MASK_W_REG | MASK_WFB, 0, 0);
+			break;
+		case 60:
+			tuple = new_tuple( I_SUB, 0, get_address(1), MASK_F_REG | MASK_WFB, 0, 0);
+			break;
+		case 61:
+			//ARSF
+			tuple = new_tuple( I_ARSF, 0, get_address(1), MASK_ADDRESS | MASK_F_REG, 0, 0);
+			break;
+		case 62:
+			tuple = new_tuple( I_ARSF, 0, get_address(1), MASK_ADDRESS | MASK_W_REG, 0, 0);
+			break;
+		case 63:
+			//LSLF
+			tuple = new_tuple( I_LSLF, 0, get_address(1), MASK_ADDRESS | MASK_F_REG, 0, 0);
+			break;
+		case 64:
+			tuple = new_tuple( I_LSLF, 0, get_address(1), MASK_ADDRESS | MASK_W_REG, 0, 0);
+			break;
+		case 65:
+			//LSRF
+			tuple = new_tuple( I_LSRF, 0, get_address(1), MASK_ADDRESS | MASK_F_REG, 0, 0);
+			break;
+		case 66:
+			tuple = new_tuple( I_LSRF, 0, get_address(1), MASK_ADDRESS | MASK_W_REG, 0, 0);
+			break;
+		case 67:
+			//ADDFSR
+			tuple = new_tuple( I_ADD, 100, FSR0,		MASK_FSR, 0, 0);
+			break;
+		case 68:
+			tuple = new_tuple( I_ADD, 100, FSR1, MASK_FSR, 0, 0);
+			break;
+		case 69:
+			//MOVLP
+			tuple = new_tuple( I_MOV, 3, 0, MASK_VALUE | MASK_LP, 0, 0);
+			break;
+		case 70:
+			//MOVLB
+			tuple = new_tuple( I_MOV, 3, 0, MASK_VALUE | MASK_LB, 0, 0);
+			break;
+		case 71:
+			//MOVIW ++0
+			tuple = new_tuple(I_MOV, PREINCREMENT, 0, MASK_IW, 0, 0);
+			break;
+		case 72:
+	  		//MOVIW --0
+			tuple = new_tuple(I_MOV, PREDECREMENT, 0, MASK_IW, 0, 0);
+			break;
+		case 73:
+			//MOVIW 0++
+			tuple = new_tuple(I_MOV, POSTINCREMENT, 0, MASK_IW, 0, 0);
+			break;
+		case 74:
+			//MOVIW 0--
+			tuple = new_tuple(I_MOV, POSTDECREMENT, 0, MASK_IW, 0, 0);
+			break;
+		case 75:
+			//MOVIW 4[0]
+			tuple = new_tuple(I_MOV, 4, 0, MASK_IW | MASK_INDIRECT, 0, 0);
+			break;
+		case 76:
+			//MOVIW ++1
+			tuple = new_tuple(I_MOV, PREINCREMENT, 1, MASK_IW, 0, 0);
+			break;
+		case 77:
+			//MOVIW --1
+			tuple = new_tuple(I_MOV, PREDECREMENT, 1, MASK_IW, 0, 0);
+			break;
+		case 78:
+			//MOVIW 1++
+			tuple = new_tuple(I_MOV, POSTINCREMENT, 1, MASK_IW, 0, 0);
+			break;
+		case 79:
+			//MOVIW 1--
+			tuple = new_tuple(I_MOV, POSTDECREMENT, 1, MASK_IW, 0, 0);
+			break;
+		case 80:
+			//MOVIW 4[1]
+			tuple = new_tuple(I_MOV, 4, 1, MASK_IW | MASK_INDIRECT, 0, 0);
+			break;
+		case 81:
+			//MOVWI ++0
+			tuple = new_tuple(I_MOV, PREINCREMENT, 0, MASK_WI, 0, 0);
+			break;
+		case 82:
+			//MOVWI --0
+			tuple = new_tuple(I_MOV, PREDECREMENT, 0, MASK_WI, 0, 0);
+			break;
+		case 83:
+			//MOVWI 0++
+			tuple = new_tuple(I_MOV, POSTINCREMENT, 0, MASK_WI, 0, 0);
+			break;
+		case 84:
+			//MOVWI 0--
+			tuple = new_tuple(I_MOV, POSTDECREMENT, 0, MASK_WI, 0, 0);
+			break;
+		case 85:
+			//MOVWI 4[0]
+			tuple = new_tuple(I_MOV, 4, 0, MASK_WI | MASK_INDIRECT, 0, 0);
+			break; 
+		case 86:
+			//MOVWI ++1
+			tuple = new_tuple(I_MOV, PREINCREMENT, 1, MASK_WI, 0, 0);
+			break;
+		case 87:
+			//MOVWI --1
+			tuple = new_tuple(I_MOV, PREDECREMENT, 1, MASK_WI, 0, 0);
+			break;
+		case 88:
+			//MOVWI 1++
+			tuple = new_tuple(I_MOV, POSTINCREMENT, 1, MASK_WI, 0, 0);
+			break;
+		case 89:
+			//MOVWI 1--
+			tuple = new_tuple(I_MOV, POSTDECREMENT, 1, MASK_WI, 0, 0);
+			break;
+		case 90:
+			//MOVWI 4[1]
+			tuple = new_tuple(I_MOV, 4, 1, MASK_WI | MASK_INDIRECT, 0, 0);
+			break; 
 		}
 		tuple_head = tuple_tail_to_head( tuple_head, tuple);
 	}

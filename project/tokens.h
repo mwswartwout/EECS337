@@ -77,7 +77,7 @@ char	*instr_table[] =
 	"decf", "decfsz", "incf", "incfsz", "rlf", "rrf", "swapf",
 	"bcf", "bsf", "btfsc", "btfss", "call", "goto", "tris", "clr",
 	"retlw", "clrwdt", "nop", "option", "retfie", "return",
-	"sleep",
+	"sleep", "arsf", "lslf", "lsrf", "br", "reset"
 };
 
 #endif

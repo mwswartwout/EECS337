@@ -141,7 +141,7 @@ void	print_tuple( TUPLE *tuple)
 	{
 		printf( "next: %p ", tuple->next);
 		if( tuple->mask)
-			printf( "instr: %s ", instr_table[ tuple->token % I_SLEEP]);
+			printf( "instr: %s ", instr_table[ tuple->token % I_RESET]);
 		else
 			printf( "token: %s ", tokens[ tuple->token]);
 		printf( "value: %d ", tuple->value);
